@@ -212,11 +212,11 @@
             </div>
         </section>
 
-        <!-- Control Deck & Quantum Telemetry Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Control Deck & Quantum Telemetry Grid (Single Column under Phase Shifter) -->
+        <div class="max-w-3xl w-full mx-auto flex flex-col gap-5">
 
-            <!-- Left Column: Simulation Controls & Phase Shifter (7 cols) -->
-            <div class="lg:col-span-7 bg-lab-panel border border-lab-border rounded-2xl p-5 flex flex-col justify-between gap-5 shadow-lg">
+            <!-- Simulation Controls & Phase Shifter -->
+            <div class="bg-lab-panel border border-lab-border rounded-2xl p-5 flex flex-col justify-between gap-5 shadow-lg">
                 
                 <!-- Simulation Mode Switcher -->
                 <div>
@@ -301,8 +301,8 @@
                 </div>
             </div>
 
-            <!-- Right Column: Detectors Telemetry & Quantum Probabilities (5 cols) -->
-            <div class="lg:col-span-5 bg-lab-panel border border-lab-border rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-lg">
+            <!-- Detectors Telemetry & Quantum Probabilities (Single Column Results) -->
+            <div class="bg-lab-panel border border-lab-border rounded-2xl p-5 flex flex-col gap-4 shadow-lg">
                 
                 <div class="flex items-center justify-between">
                     <div>
@@ -369,6 +369,50 @@
                         <span id="svgCoordD1" class="text-emerald-400">P(D1) = 100.0%</span>
                         <span class="text-slate-500">Clicca o trascina sul grafico per variare φ</span>
                         <span id="svgCoordD2" class="text-violet-400">P(D2) = 0.0%</span>
+                    </div>
+                </div>
+
+                <!-- Grafica Riassuntiva Comparativa D1 vs D2 (Teorica & Empirica) -->
+                <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 space-y-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs font-bold text-emerald-400" id="summaryRatioD1">100.0% D1</span>
+                            <span class="text-slate-600 text-xs">/</span>
+                            <span class="font-mono text-xs font-bold text-violet-400" id="summaryRatioD2">0.0% D2</span>
+                        </div>
+                        <span id="summarySourceLabel" class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/50">φ = 0°</span>
+                    </div>
+
+                    <!-- Barra Comparativa Probabilità Teorica -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] font-mono text-slate-400">
+                            <span>Distribuzione Teorica</span>
+                            <span>cos²(φ/2) vs sin²(φ/2)</span>
+                        </div>
+                        <div class="w-full h-5 bg-slate-900 rounded-lg overflow-hidden border border-slate-800 flex font-mono text-[10px] font-bold text-slate-950">
+                            <div id="compBarTheoD1" class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 flex items-center justify-center transition-all duration-150 overflow-hidden whitespace-nowrap" style="width: 100%">
+                                <span id="compBarTheoLabelD1">100%</span>
+                            </div>
+                            <div id="compBarTheoD2" class="h-full bg-gradient-to-r from-violet-400 to-violet-500 flex items-center justify-center transition-all duration-150 overflow-hidden whitespace-nowrap" style="width: 0%">
+                                <span id="compBarTheoLabelD2"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barra Comparativa Empirica sui Fotoni Rivelati -->
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                            <span>Ripartizione Empirica (N = <span id="empTotalCount" class="text-slate-200">0</span>)</span>
+                            <span id="empStatusBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">In attesa fotoni</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800 flex">
+                            <div id="compBarEmpD1" class="h-full bg-emerald-400 transition-all duration-150" style="width: 50%"></div>
+                            <div id="compBarEmpD2" class="h-full bg-violet-400 transition-all duration-150" style="width: 50%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-mono">
+                            <span id="empLegendD1" class="text-emerald-400">D1: --%</span>
+                            <span id="empLegendD2" class="text-violet-400">D2: --%</span>
+                        </div>
                     </div>
                 </div>
 
@@ -440,53 +484,6 @@
                     <span>
                         Ogni riflessione su uno specchio o beam splitter introduce uno sfasamento di <span class="font-mono text-slate-200">π/2</span>. Con <span class="font-mono text-amber-300">φ = 0°</span> l'interferenza è totalmente costruttiva verso <strong class="text-emerald-400">D1</strong> e distruttiva verso <strong class="text-violet-400">D2</strong>.
                     </span>
-                </div>
-
-                <!-- Grafica Riassuntiva Percentuali D1 vs D2 -->
-                <div id="detectorSummaryChart" class="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 space-y-3">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Ripartizione Percentuale Rivelatori</span>
-                        </div>
-                        <div class="font-mono text-xs font-bold flex items-center gap-1.5">
-                            <span id="summaryRatioD1" class="text-emerald-400">100.0% D1</span>
-                            <span class="text-slate-600">/</span>
-                            <span id="summaryRatioD2" class="text-violet-400">0.0% D2</span>
-                        </div>
-                    </div>
-
-                    <!-- Barra Comparativa Teorica -->
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono">
-                            <span>Teorica Attesa (cos² / sin²)</span>
-                            <span id="summarySourceLabel" class="text-cyan-300/90">φ = 0°</span>
-                        </div>
-                        <div class="w-full h-3.5 rounded-full bg-slate-900 border border-slate-800 overflow-hidden flex">
-                            <div id="compBarTheoD1" class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-150 flex items-center justify-center text-[9px] font-mono font-bold text-slate-950 overflow-hidden" style="width: 100%">
-                                <span id="compBarTheoLabelD1">100%</span>
-                            </div>
-                            <div id="compBarTheoD2" class="h-full bg-gradient-to-r from-violet-500 to-purple-400 transition-all duration-150 flex items-center justify-center text-[9px] font-mono font-bold text-slate-950 overflow-hidden" style="width: 0%">
-                                <span id="compBarTheoLabelD2"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Barra Comparativa Empirica (attiva quando N > 0) -->
-                    <div id="empiricalSection" class="space-y-1 pt-0.5 border-t border-slate-800/70">
-                        <div class="flex items-center justify-between text-[11px] font-mono">
-                            <span class="text-slate-400">Empirica Rivelata (<span id="empTotalCount" class="text-slate-200">0</span> fotoni)</span>
-                            <span id="empStatusBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">In attesa fotoni</span>
-                        </div>
-                        <div class="w-full h-2.5 rounded-full bg-slate-900 border border-slate-800 overflow-hidden flex">
-                            <div id="compBarEmpD1" class="h-full bg-emerald-400/85 transition-all duration-200" style="width: 50%"></div>
-                            <div id="compBarEmpD2" class="h-full bg-violet-400/85 transition-all duration-200" style="width: 50%"></div>
-                        </div>
-                        <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                            <span id="empLegendD1" class="text-emerald-400/90">D1: --%</span>
-                            <span id="empLegendD2" class="text-violet-400/90">D2: --%</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
