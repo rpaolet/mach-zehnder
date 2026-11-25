@@ -190,6 +190,10 @@
                     <span>Sfasatore Ottico (Phase Shifter φ)</span>
                 </div>
                 <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-full bg-rose-400 shadow-[0_0_8px_#fb7185]"></span>
+                    <span>Sonda Osservatore Cammino (Which-Path)</span>
+                </div>
+                <div class="flex items-center gap-1.5">
                     <span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
                     <span>Rivelatore D1</span>
                 </div>
@@ -228,6 +232,47 @@
                         </div>
                         <p id="modeDescription" class="text-xs text-slate-400 mt-2 leading-relaxed">
                             La luminosità dei LED è proporzionale alla densità di probabilità <span class="font-mono text-cyan-300">|ψ|²</span>. Al secondo beam splitter (BS2) i due cammini interferiscono costruttivamente o distruttivamente in base allo sfasamento <span class="font-mono text-amber-300">φ</span>.
+                        </p>
+                    </div>
+
+                    <!-- Which-Path Observer & Quantum Erasure Control -->
+                    <div id="observerBox" class="bg-slate-950/80 border border-slate-800/90 rounded-xl p-4 transition-colors">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span id="observerDot" class="w-2.5 h-2.5 rounded-full bg-slate-500 transition-all"></span>
+                                <span class="text-sm font-semibold text-white">Misura dei Cammini (Osservatore)</span>
+                            </div>
+                            <span id="observerStateBadge" class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">COERENZA ATTIVA</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2.5">
+                            <button id="btnToggleObserver" type="button" class="py-2 px-3 rounded-lg text-xs font-semibold border transition flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-rose-950/40 text-slate-200 border-slate-700 hover:border-rose-500/50">
+                                <svg class="w-3.5 h-3.5 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <span id="labelToggleObserver">Attiva Misura Cammino</span>
+                            </button>
+
+                            <button id="btnQuantumEraser" type="button" class="py-2 px-3 rounded-lg text-xs font-semibold border transition flex items-center justify-center gap-1.5 bg-cyan-950/40 hover:bg-cyan-900/50 text-cyan-300 border-cyan-700/50" title="Cancella l'informazione di cammino per ripristinare l'interferenza">
+                                <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                </svg>
+                                <span>Cancella Cammino (Eraser)</span>
+                            </button>
+                        </div>
+
+                        <div id="observerBranchRow" class="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono mb-2">
+                            <span class="text-slate-400">Sonda su:</span>
+                            <div class="flex gap-1.5">
+                                <button data-branch="both" class="branch-opt px-2 py-0.5 rounded border bg-rose-500/20 text-rose-300 border-rose-500/40 transition">Entrambi</button>
+                                <button data-branch="upper" class="branch-opt px-2 py-0.5 rounded border bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200 transition">Ramo Alto</button>
+                                <button data-branch="lower" class="branch-opt px-2 py-0.5 rounded border bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200 transition">Ramo Basso</button>
+                            </div>
+                        </div>
+
+                        <p id="observerDescription" class="text-xs text-slate-400 leading-relaxed">
+                            Nessuna informazione di cammino registrata: i due cammini restano indistinguibili e producono interferenza dipendente da <span class="font-mono text-amber-300">φ</span>.
                         </p>
                     </div>
 
@@ -283,8 +328,8 @@
                         <!-- Speed Slider -->
                         <div class="flex items-center gap-2.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 flex-grow sm:flex-grow-0">
                             <span class="text-xs text-slate-400 whitespace-nowrap">Velocità:</span>
-                            <input id="speedSlider" type="range" min="0.3" max="2.5" step="0.1" value="1.0" class="w-24 sm:w-28">
-                            <span id="speedDisplay" class="text-xs font-mono text-cyan-400 w-9 text-right">1.0x</span>
+                            <input id="speedSlider" type="range" min="0.5" max="100" step="0.5" value="1.0" class="w-24 sm:w-28">
+                            <span id="speedDisplay" class="text-xs font-mono text-cyan-400 w-12 text-right">1.0x</span>
                         </div>
                     </div>
                 </div>
@@ -294,11 +339,12 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]"></span>
-                            <span class="text-sm font-bold text-white">Curva Interferenza P(φ)</span>
+                            <span class="text-sm font-bold text-white">Curva Interferenza Misurata P(φ)</span>
                         </div>
-                        <div class="flex items-center gap-2.5 text-[11px] font-mono">
-                            <span class="flex items-center gap-1 text-emerald-400 font-semibold"><span class="w-2.5 h-0.5 bg-emerald-400 inline-block"></span>D1 cos²</span>
-                            <span class="flex items-center gap-1 text-violet-400 font-semibold"><span class="w-2.5 h-0.5 bg-violet-400 inline-block"></span>D2 sin²</span>
+                        <div class="flex flex-wrap items-center gap-2 text-[11px] font-mono">
+                            <span class="flex items-center gap-1 text-emerald-400 font-semibold"><span class="w-2.5 h-0.5 bg-emerald-400 inline-block"></span>D1 Mis.</span>
+                            <span class="flex items-center gap-1 text-violet-400 font-semibold"><span class="w-2.5 h-0.5 bg-violet-400 inline-block"></span>D2 Mis.</span>
+                            <button id="btnToggleTheoCurve" type="button" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Mostra o nascondi il riferimento teorico">Teoria: ON</button>
                             <span id="svgLivePhaseBadge" class="text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/50">φ = 0°</span>
                         </div>
                     </div>
@@ -314,16 +360,16 @@
                         <!-- Guide verticali fasi notevoli (90°, 180°, 270°) -->
                         <line x1="104.5" y1="12" x2="104.5" y2="102" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,3" />
                         <line x1="179" y1="12" x2="179" y2="102" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,3" />
-                        <line x1="253.5" y1="12" x2="253.5" y2="102" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,3" />
+                        <!-- Curve di riferimento teoriche (opzionali) -->
+                        <path id="svgTheoD1" d="" fill="none" stroke="#34d399" stroke-width="1.1" stroke-dasharray="2,2.5" opacity="0.32" />
+                        <path id="svgTheoD2" d="" fill="none" stroke="#a78bfa" stroke-width="1.1" stroke-dasharray="2,2.5" opacity="0.32" />
 
-                        <!-- Etichette asse verticale percentuali -->
-                        <text x="25" y="15" text-anchor="end" fill="#94a3b8" font-size="8" font-family="JetBrains Mono, monospace">100%</text>
-                        <text x="25" y="59.5" text-anchor="end" fill="#64748b" font-size="7.5" font-family="JetBrains Mono, monospace">50%</text>
-                        <text x="25" y="104.5" text-anchor="end" fill="#94a3b8" font-size="8" font-family="JetBrains Mono, monospace">0%</text>
-
-                        <!-- Curve calcolate dinamicamente -->
+                        <!-- Curve calcolate dalle misure effettuate dai rivelatori -->
                         <path id="svgCurveD1" d="" fill="none" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" />
                         <path id="svgCurveD2" d="" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="4,2.5" />
+
+                        <!-- Marker delle singole misure registrate -->
+                        <g id="svgMeasuredPoints"></g>
 
                         <!-- Cursore verticale fase φ corrente -->
                         <line id="svgPhaseCursorLine" x1="30" y1="9" x2="30" y2="105" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="2.5,1.5" />
@@ -339,9 +385,9 @@
                     </svg>
 
                     <div class="flex items-center justify-between text-[11px] font-mono text-slate-400">
-                        <span id="svgCoordD1" class="text-emerald-400">P(D1) = 100.0%</span>
-                        <span class="text-slate-500 hidden sm:inline">Clicca o trascina sul grafico per variare φ</span>
-                        <span id="svgCoordD2" class="text-violet-400">P(D2) = 0.0%</span>
+                        <span id="svgCoordD1" class="text-emerald-400">D1 Mis: --%</span>
+                        <span id="svgMeasureHint" class="text-slate-500 hidden sm:inline">0 campioni misurati · Clicca o trascina per φ</span>
+                        <span id="svgCoordD2" class="text-violet-400">D2 Mis: --%</span>
                     </div>
                 </div>
         </div>
@@ -598,6 +644,12 @@
             phaseShifter: [
                 [14, 0], [15, 0], [16, 0] // Indicatori LED sopra il ramo superiore
             ],
+            observerUpper: [
+                [11, 2], [12, 2] // Sonda di misura sul ramo superiore
+            ],
+            observerLower: [
+                [11, 7], [12, 7] // Sonda di misura sul ramo inferiore
+            ],
             detector1: [
                 [30, 1], [31, 1],
                 [30, 2], [31, 2]
@@ -608,51 +660,107 @@
             ]
         };
 
+        // Riferimenti al Canvas e buffer della matrice LED 8x32
+        const container = document.getElementById('canvasContainer');
+        const canvas = document.getElementById('ledCanvas');
+        const ctx = canvas.getContext('2d');
+        const ledBuffer = Array.from({ length: ROWS }, () =>
+            Array.from({ length: COLS }, () => ({ r: 13, g: 18, b: 28, glow: 0 }))
+        );
+
+        // Calcola le probabilità teoriche di rilevazione su D1 e D2 in funzione dello sfasamento φ
+        // e dell'eventuale misura dei cammini (which-path observer / cancellazione quantistica)
+        function getProbabilities() {
+            const rad = (state.phaseDeg * Math.PI) / 180;
+            const cos2 = Math.pow(Math.cos(rad / 2), 2);
+            const sin2 = Math.pow(Math.sin(rad / 2), 2);
+
+            if (!state.observerActive) {
+                return { p1: cos2, p2: sin2, visibility: 1.0 };
+            }
+
+            // Con misura del cammino attiva, l'interferenza scompare (50% / 50%) per i fotoni tracciati:
+            // se la sonda è su entrambi i rami, la visibilità è 0 (50/50); se è su un solo ramo,
+            // metà dei fotoni (quelli che passano dal ramo sondato) hanno cammino noto -> 50/50,
+            // mentre l'altra metà conserva interferenza residua (visibilità 0.5).
+            const visibility = state.observerBranch === 'both' ? 0.0 : 0.5;
+            const p1 = 0.5 * (1 - visibility) + cos2 * visibility;
+            const p2 = 0.5 * (1 - visibility) + sin2 * visibility;
+            return { p1, p2, visibility };
+        }
+
+        // Genera un nuovo pacchetto d'onda o singolo fotone dalla sorgente laser
+        function spawnPulse() {
+            const { p1 } = getProbabilities();
+            state.pulses.push({
+                progress: 0,
+                phaseAtShift: state.phaseDeg,
+                observerSnapshot: state.observerActive,
+                observerBranchSnapshot: state.observerBranch,
+                collapsedTarget: Math.random() < p1 ? 'd1' : 'd2',
+                measured: false
+            });
+        }
+
         // Stato globale della simulazione
         const state = {
             mode: 'wave',           // 'wave' | 'photon'
             phaseDeg: 0,            // 0 .. 360 gradi
+            observerActive: false,  // Misura dei cammini attiva (distrugge interferenza)
+            observerBranch: 'both', // 'both' | 'upper' | 'lower'
             isPlaying: true,
             speed: 1.0,
             showLabels: true,
+            showTheoCurve: true,
             pulses: [],             // Array di pacchetti d'onda / fotoni attivi
             spawnTimer: 0,
             counts: { d1: 0, d2: 0 },
+            // Storico misure per fase (0..360): { d1, d2, total }
+            phaseMeasurements: Array.from({ length: 361 }, () => ({ d1: 0, d2: 0, total: 0 })),
             flashD1: 0,             // Intensità flash rivelatore D1 (0..1)
             flashD2: 0,             // Intensità flash rivelatore D2 (0..1)
             hoveredLed: null
         };
-
-        // Buffer frame 8x32 RGB
-        let ledBuffer = Array.from({ length: ROWS }, () =>
-            Array.from({ length: COLS }, () => ({ r: 10, g: 14, b: 22, glow: 0 }))
-        );
-
-        // Elementi DOM
-        const canvas = document.getElementById('ledCanvas');
-        const ctx = canvas.getContext('2d');
-        const container = document.getElementById('canvasContainer');
-
-        // Calcolo probabilità quantistiche
-        function getProbabilities() {
-            const phiRad = (state.phaseDeg * Math.PI) / 180;
-            const p1 = Math.pow(Math.cos(phiRad / 2), 2);
-            const p2 = Math.pow(Math.sin(phiRad / 2), 2);
-            return { p1, p2, phiRad };
+        // Registra una misura effettiva dai rivelatori per una determinata fase
+        function recordDetectorMeasurement(phaseDeg, d1Hits, d2Hits) {
+            const clampedPhase = Math.max(0, Math.min(360, Math.round(phaseDeg)));
+            const entry = state.phaseMeasurements[clampedPhase];
+            entry.d1 += d1Hits;
+            entry.d2 += d2Hits;
+            entry.total += d1Hits + d2Hits;
         }
 
-        // Genera un nuovo pacchetto d'onda o fotone singolo
-        function spawnPulse() {
-            const { p1 } = getProbabilities();
-            // In modalità fotone singolo, l'esito del collasso viene determinato secondo Born rule
-            const collapsedTarget = Math.random() < p1 ? 'd1' : 'd2';
+        // Restituisce il tasso misurato (0..1) per una data fase, o null se non ci sono misure
+        function getMeasuredRateAtPhase(deg) {
+            const clamped = Math.max(0, Math.min(360, Math.round(deg)));
+            const entry = state.phaseMeasurements[clamped];
+            if (!entry || entry.total <= 0) return null;
+            return {
+                m1: entry.d1 / entry.total,
+                m2: entry.d2 / entry.total,
+                total: entry.total
+            };
+        }
 
-            state.pulses.push({
-                progress: 0, // 0.0 -> 3.0 (0..1 ingresso, 1..2 rami paralleli, 2..3 uscita)
-                collapsedTarget,
-                measured: false,
-                phaseAtShift: state.phaseDeg
-            });
+        // Calcola la percentuale misurata interpolata/pesata intorno alla fase corrente
+        function getMeasuredSummaryAtCurrentPhase() {
+            const direct = getMeasuredRateAtPhase(state.phaseDeg);
+            if (direct) return { ...direct, exact: true };
+
+            // Cerca la misura più vicina entro ±8° per mostrare un valore indicativo quando la fase esatta non ha ancora campioni
+            let best = null;
+            let bestDist = Infinity;
+            for (let offset = 1; offset <= 8; offset++) {
+                for (const candidateDeg of [state.phaseDeg - offset, state.phaseDeg + offset]) {
+                    if (candidateDeg < 0 || candidateDeg > 360) continue;
+                    const rate = getMeasuredRateAtPhase(candidateDeg);
+                    if (rate && offset < bestDist) {
+                        bestDist = offset;
+                        best = { ...rate, exact: false, nearDeg: candidateDeg };
+                    }
+                }
+            }
+            return best;
         }
 
         // Aggiorna la logica fisica e i LED ad ogni frame
@@ -688,19 +796,23 @@
                 if (!p.measured && p.progress >= 2.85) {
                     p.measured = true;
                     const { p1, p2 } = getProbabilities();
+                    const measurePhase = Math.round(p.phaseAtShift);
 
                     if (state.mode === 'photon') {
                         if (p.collapsedTarget === 'd1') {
                             state.counts.d1++;
                             state.flashD1 = 1.0;
+                            recordDetectorMeasurement(measurePhase, 1, 0);
                         } else {
                             state.counts.d2++;
                             state.flashD2 = 1.0;
+                            recordDetectorMeasurement(measurePhase, 0, 1);
                         }
                     } else {
-                        // In modalità onda, illumina entrambi i rivelatori proporzionalmente all'intensità
+                        // In modalità onda, registra il contributo frazionario misurato sui due rivelatori
                         state.flashD1 = Math.max(state.flashD1, p1);
                         state.flashD2 = Math.max(state.flashD2, p2);
+                        recordDetectorMeasurement(measurePhase, p1, p2);
                         if (p1 > 0.5) state.counts.d1++;
                         if (p2 > 0.5) state.counts.d2++;
                     }
@@ -789,6 +901,21 @@
             OPTICS.phaseShifter.forEach(([x, y]) => {
                 setLed(x, y, Math.round(251 * psBrightness), Math.round(180 * psBrightness), 24, psBrightness * 0.8);
             });
+
+            // Sonda Osservatore Cammino (Which-Path Detector in rosso corallo quando attiva)
+            if (state.observerActive) {
+                const pulseGlow = 0.65 + 0.35 * Math.sin(performance.now() * 0.008);
+                const probeCells = [];
+                if (state.observerBranch === 'both' || state.observerBranch === 'upper') {
+                    probeCells.push(...OPTICS.observerUpper);
+                }
+                if (state.observerBranch === 'both' || state.observerBranch === 'lower') {
+                    probeCells.push(...OPTICS.observerLower);
+                }
+                probeCells.forEach(([x, y]) => {
+                    setLed(x, y, 251, 113, 133, pulseGlow);
+                });
+            }
 
             // 4. Propagazione Pacchetti d'Onda / Fotoni
             const { p1, p2 } = getProbabilities();
@@ -976,6 +1103,14 @@
                 drawTag(6, 1, 'M1', '#cbd5e1', true);
                 drawTag(6, 6, 'M2', '#cbd5e1', false);
                 drawTag(15, 0, 'PHASE φ', '#fbbf24', true);
+                if (state.observerActive) {
+                    if (state.observerBranch === 'both' || state.observerBranch === 'upper') {
+                        drawTag(11.5, 2, 'SONDA', '#fb7185', false);
+                    }
+                    if (state.observerBranch === 'both' || state.observerBranch === 'lower') {
+                        drawTag(11.5, 7, 'SONDA', '#fb7185', false);
+                    }
+                }
                 drawTag(24, 1, 'M3', '#cbd5e1', true);
                 drawTag(24, 6, 'M4', '#cbd5e1', false);
                 drawTag(24, 5, 'BS2', '#38bdf8', false);
@@ -1001,9 +1136,38 @@
 
         // Aggiorna i pannelli numerici, le barre di probabilità e la grafica riassuntiva
         function updateTelemetryUI() {
-            const { p1, p2 } = getProbabilities();
+            const { p1, p2, visibility } = getProbabilities();
             const pct1 = (p1 * 100).toFixed(1);
             const pct2 = (p2 * 100).toFixed(1);
+            const measuredCurrent = getMeasuredSummaryAtCurrentPhase();
+            const measuredTotalSamples = state.phaseMeasurements.reduce((acc, item) => acc + item.total, 0);
+
+            // Aggiorna stato visivo dell'osservatore / cancellazione quantistica
+            const observerBox = document.getElementById('observerBox');
+            const observerDot = document.getElementById('observerDot');
+            const observerBadge = document.getElementById('observerStateBadge');
+            const observerDesc = document.getElementById('observerDescription');
+            const btnToggleObs = document.getElementById('labelToggleObserver');
+
+            if (observerBox && observerDot && observerBadge && observerDesc && btnToggleObs) {
+                if (state.observerActive) {
+                    observerBox.classList.remove('border-slate-800/90');
+                    observerBox.classList.add('border-rose-500/40');
+                    observerDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-400 shadow-[0_0_8px_#fb7185] animate-pulse';
+                    observerBadge.textContent = visibility === 0 ? 'INTERFERENZA DISTRUTTA (50/50)' : 'VISIBILITÀ RIDOTTA (V=0.5)';
+                    observerBadge.className = 'text-[11px] font-mono text-rose-300 bg-rose-950/70 px-2 py-0.5 rounded border border-rose-800/60';
+                    btnToggleObs.textContent = 'Disattiva Misura Cammino';
+                    observerDesc.innerHTML = 'La sonda rileva quale cammino ha seguito il fotone: l’informazione "which-path" elimina l’interferenza dipendente da <span class="font-mono text-amber-300">φ</span>. Usa <span class="font-mono text-cyan-300">Cancella Cammino</span> per ripristinare la cancellazione quantistica.';
+                } else {
+                    observerBox.classList.remove('border-rose-500/40');
+                    observerBox.classList.add('border-slate-800/90');
+                    observerDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]';
+                    observerBadge.textContent = 'COERENZA ATTIVA';
+                    observerBadge.className = 'text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50';
+                    btnToggleObs.textContent = 'Attiva Misura Cammino';
+                    observerDesc.innerHTML = 'Nessuna informazione di cammino registrata (o informazione cancellata): i due cammini restano indistinguibili e producono interferenza dipendente da <span class="font-mono text-amber-300">φ</span>.';
+                }
+            }
 
             document.getElementById('probD1Text').textContent = `${pct1}%`;
             document.getElementById('probD2Text').textContent = `${pct2}%`;
@@ -1044,7 +1208,7 @@
             document.getElementById('empTotalCount').textContent = total;
             const empBar1 = document.getElementById('compBarEmpD1');
             const empBar2 = document.getElementById('compBarEmpD2');
-            const empBadge = document.getElementById('empStatusBadge');
+            const empStatus = document.getElementById('empStatusBadge');
             const empLegend1 = document.getElementById('empLegendD1');
             const empLegend2 = document.getElementById('empLegendD2');
 
@@ -1053,57 +1217,80 @@
                 empBar2.style.width = `${empPct2}%`;
                 empLegend1.textContent = `D1: ${empPct1}% (${state.counts.d1})`;
                 empLegend2.textContent = `D2: ${empPct2}% (${state.counts.d2})`;
-                const delta = Math.abs(parseFloat(empPct1) - parseFloat(pct1)).toFixed(1);
-                empBadge.textContent = `Δ = ${delta}%`;
-                empBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-800/60';
+                empStatus.textContent = `${total} fotoni`;
+                empStatus.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800/50';
             } else {
                 empBar1.style.width = '50%';
                 empBar2.style.width = '50%';
                 empLegend1.textContent = 'D1: --%';
                 empLegend2.textContent = 'D2: --%';
-                empBadge.textContent = 'In attesa fotoni';
-                empBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800';
+                empStatus.textContent = 'In attesa fotoni';
+                empStatus.className = 'text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800';
             }
 
-            // Aggiorna cursore e marker sulla curva SVG P(φ)
-            updatePhaseSvgChart(p1, p2);
+            // Evidenziazione visiva del rivelatore dominante
+            const cardD1 = document.getElementById('cardD1');
+            const cardD2 = document.getElementById('cardD2');
+            const ledIndD1 = document.getElementById('ledIndicatorD1');
+            const ledIndD2 = document.getElementById('ledIndicatorD2');
+
+            if (p1 > 0.75) {
+                cardD1.classList.add('border-emerald-500/50', 'shadow-[0_0_15px_rgba(16,185,129,0.12)]');
+                cardD1.classList.remove('border-slate-800');
+            } else {
+                cardD1.classList.remove('border-emerald-500/50', 'shadow-[0_0_15px_rgba(16,185,129,0.12)]');
+                cardD1.classList.add('border-slate-800');
+            }
+
+            if (p2 > 0.75) {
+                cardD2.classList.add('border-violet-500/50', 'shadow-[0_0_15px_rgba(139,92,246,0.12)]');
+                cardD2.classList.remove('border-slate-800');
+            } else {
+                cardD2.classList.remove('border-violet-500/50', 'shadow-[0_0_15px_rgba(139,92,246,0.12)]');
+                cardD2.classList.add('border-slate-800');
+            }
+
+            // Flash dinamico all'arrivo del fotone/onda
+            const flash1Alpha = 0.35 + state.flashD1 * 0.65;
+            const flash2Alpha = 0.35 + state.flashD2 * 0.65;
+            ledIndD1.style.transform = `scale(${1 + state.flashD1 * 0.35})`;
+            ledIndD1.style.backgroundColor = `rgba(52, 211, 153, ${flash1Alpha})`;
+            ledIndD1.style.boxShadow = state.flashD1 > 0.1 ? `0 0 ${12 * state.flashD1}px #34d399` : 'none';
+
+            ledIndD2.style.transform = `scale(${1 + state.flashD2 * 0.35})`;
+            ledIndD2.style.backgroundColor = `rgba(167, 139, 250, ${flash2Alpha})`;
+            ledIndD2.style.boxShadow = state.flashD2 > 0.1 ? `0 0 ${12 * state.flashD2}px #a78bfa` : 'none';
+
+            // Aggiorna cursore e marker sulla curva SVG P(φ) basata sulle misure dei rivelatori
+            updatePhaseSvgChart(p1, p2, measuredCurrent, measuredTotalSamples);
             const livePhaseBadge = document.getElementById('svgLivePhaseBadge');
             const coordD1 = document.getElementById('svgCoordD1');
             const coordD2 = document.getElementById('svgCoordD2');
+            const measureHint = document.getElementById('svgMeasureHint');
+
             if (livePhaseBadge) livePhaseBadge.textContent = `φ = ${state.phaseDeg}°`;
-            if (coordD1) coordD1.textContent = `P(D1) = ${pct1}%`;
-            if (coordD2) coordD2.textContent = `P(D2) = ${pct2}%`;
-
-            // Effetto bagliore sulle card dei rivelatori quando scattano
-            const cardD1 = document.getElementById('cardD1');
-            const ledD1 = document.getElementById('ledIndicatorD1');
-            if (state.flashD1 > 0.25) {
-                cardD1.classList.add('border-emerald-500/70', 'shadow-[0_0_20px_rgba(16,185,129,0.2)]');
-                ledD1.style.backgroundColor = '#34d399';
-                ledD1.style.boxShadow = '0 0 12px #34d399';
+            if (measuredCurrent) {
+                const m1Pct = (measuredCurrent.m1 * 100).toFixed(1);
+                const m2Pct = (measuredCurrent.m2 * 100).toFixed(1);
+                if (coordD1) coordD1.textContent = `D1 Mis: ${m1Pct}%`;
+                if (coordD2) coordD2.textContent = `D2 Mis: ${m2Pct}%`;
             } else {
-                cardD1.classList.remove('border-emerald-500/70', 'shadow-[0_0_20px_rgba(16,185,129,0.2)]');
-                ledD1.style.backgroundColor = 'rgba(16, 185, 129, 0.25)';
-                ledD1.style.boxShadow = 'none';
+                if (coordD1) coordD1.textContent = `D1 Mis: --%`;
+                if (coordD2) coordD2.textContent = `D2 Mis: --%`;
             }
-
-            const cardD2 = document.getElementById('cardD2');
-            const ledD2 = document.getElementById('ledIndicatorD2');
-            if (state.flashD2 > 0.25) {
-                cardD2.classList.add('border-violet-500/70', 'shadow-[0_0_20px_rgba(139,92,246,0.2)]');
-                ledD2.style.backgroundColor = '#a78bfa';
-                ledD2.style.boxShadow = '0 0 12px #a78bfa';
-            } else {
-                cardD2.classList.remove('border-violet-500/70', 'shadow-[0_0_20px_rgba(139,92,246,0.2)]');
-                ledD2.style.backgroundColor = 'rgba(139, 92, 246, 0.25)';
-                ledD2.style.boxShadow = 'none';
+            if (measureHint) {
+                const nRounded = Math.round(measuredTotalSamples);
+                measureHint.textContent = `${nRounded} ${nRounded === 1 ? 'misura' : 'misure'} rivelatori · Clicca o trascina per φ`;
             }
         }
 
-        // Inizializza e aggiorna il mini grafico SVG delle probabilità P(φ) al variare di φ (0°..360°)
-        function updatePhaseSvgChart(currentP1, currentP2) {
+        // Aggiorna il grafico SVG delle probabilità P(φ) a partire dalle misure effettuate dai rivelatori
+        function updatePhaseSvgChart(currentP1, currentP2, measuredCurrent, measuredTotalSamples) {
             const curveD1El = document.getElementById('svgCurveD1');
             const curveD2El = document.getElementById('svgCurveD2');
+            const theoD1El = document.getElementById('svgTheoD1');
+            const theoD2El = document.getElementById('svgTheoD2');
+            const pointsGroup = document.getElementById('svgMeasuredPoints');
             if (!curveD1El || !curveD2El) return;
 
             const plotLeft = 30;
@@ -1113,10 +1300,10 @@
             const plotWidth = plotRight - plotLeft;
             const plotHeight = plotBottom - plotTop;
 
-            // Genera i path delle curve teoriche una sola volta se non ancora popolati
-            if (!curveD1El.getAttribute('d')) {
-                let d1Path = '';
-                let d2Path = '';
+            // Genera i path di riferimento teorici una sola volta
+            if (theoD1El && theoD2El && !theoD1El.getAttribute('d')) {
+                let t1Path = '';
+                let t2Path = '';
                 const steps = 90;
 
                 for (let i = 0; i <= steps; i++) {
@@ -1130,18 +1317,63 @@
                     const y2 = plotBottom - prob2 * plotHeight;
 
                     const prefix = i === 0 ? 'M' : 'L';
-                    d1Path += `${prefix}${x.toFixed(1)},${y1.toFixed(1)} `;
-                    d2Path += `${prefix}${x.toFixed(1)},${y2.toFixed(1)} `;
+                    t1Path += `${prefix}${x.toFixed(1)},${y1.toFixed(1)} `;
+                    t2Path += `${prefix}${x.toFixed(1)},${y2.toFixed(1)} `;
                 }
 
-                curveD1El.setAttribute('d', d1Path.trim());
-                curveD2El.setAttribute('d', d2Path.trim());
+                theoD1El.setAttribute('d', t1Path.trim());
+                theoD2El.setAttribute('d', t2Path.trim());
             }
 
-            // Posiziona cursore verticale e punti attivi per la fase φ corrente
+            if (theoD1El && theoD2El) {
+                const theoOpacity = state.showTheoCurve ? '0.32' : '0';
+                theoD1El.setAttribute('opacity', theoOpacity);
+                theoD2El.setAttribute('opacity', theoOpacity);
+            }
+
+            // Raccoglie i punti misurati dai rivelatori lungo la fase 0..360°
+            const measuredSamples = [];
+            for (let deg = 0; deg <= 360; deg++) {
+                const entry = state.phaseMeasurements[deg];
+                if (entry && entry.total > 0) {
+                    const x = plotLeft + (deg / 360) * plotWidth;
+                    const r1 = entry.d1 / entry.total;
+                    const r2 = entry.d2 / entry.total;
+                    const y1 = plotBottom - r1 * plotHeight;
+                    const y2 = plotBottom - r2 * plotHeight;
+                    measuredSamples.push({ deg, x, r1, r2, y1, y2, total: entry.total });
+                }
+            }
+
+            // Costruisce la curva misurata dai dati raccolti dai rivelatori
+            let m1Path = '';
+            let m2Path = '';
+            measuredSamples.forEach((pt, idx) => {
+                const cmd = idx === 0 ? 'M' : 'L';
+                m1Path += `${cmd}${pt.x.toFixed(1)},${pt.y1.toFixed(1)} `;
+                m2Path += `${cmd}${pt.x.toFixed(1)},${pt.y2.toFixed(1)} `;
+            });
+
+            curveD1El.setAttribute('d', m1Path.trim());
+            curveD2El.setAttribute('d', m2Path.trim());
+
+            // Aggiorna i punti discreti delle misure sui rivelatori
+            if (pointsGroup) {
+                let circlesHtml = '';
+                // Limita i cerchi disegnati se ci sono moltissimi campioni per mantenere il rendering fluido
+                const stride = measuredSamples.length > 80 ? Math.ceil(measuredSamples.length / 80) : 1;
+                for (let i = 0; i < measuredSamples.length; i += stride) {
+                    const pt = measuredSamples[i];
+                    circlesHtml += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y1.toFixed(1)}" r="1.8" fill="#34d399" opacity="0.85" />`;
+                    circlesHtml += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y2.toFixed(1)}" r="1.8" fill="#a78bfa" opacity="0.85" />`;
+                }
+                pointsGroup.innerHTML = circlesHtml;
+            }
+
+            // Posiziona cursore verticale e marker sulla misura corrente (o sul riferimento se ancora privo di misure)
             const cursorX = plotLeft + (state.phaseDeg / 360) * plotWidth;
-            const markerY1 = plotBottom - currentP1 * plotHeight;
-            const markerY2 = plotBottom - currentP2 * plotHeight;
+            const activeRate1 = measuredCurrent ? measuredCurrent.m1 : (measuredTotalSamples === 0 ? currentP1 : null);
+            const activeRate2 = measuredCurrent ? measuredCurrent.m2 : (measuredTotalSamples === 0 ? currentP2 : null);
 
             const cursorLine = document.getElementById('svgPhaseCursorLine');
             const marker1 = document.getElementById('svgMarkerD1');
@@ -1153,11 +1385,21 @@
             }
             if (marker1) {
                 marker1.setAttribute('cx', cursorX.toFixed(1));
-                marker1.setAttribute('cy', markerY1.toFixed(1));
+                if (activeRate1 !== null) {
+                    marker1.setAttribute('cy', (plotBottom - activeRate1 * plotHeight).toFixed(1));
+                    marker1.setAttribute('opacity', '1');
+                } else {
+                    marker1.setAttribute('opacity', '0.25');
+                }
             }
             if (marker2) {
                 marker2.setAttribute('cx', cursorX.toFixed(1));
-                marker2.setAttribute('cy', markerY2.toFixed(1));
+                if (activeRate2 !== null) {
+                    marker2.setAttribute('cy', (plotBottom - activeRate2 * plotHeight).toFixed(1));
+                    marker2.setAttribute('opacity', '1');
+                } else {
+                    marker2.setAttribute('opacity', '0.25');
+                }
             }
         }
 
@@ -1196,6 +1438,19 @@
             document.querySelectorAll('.preset-phase').forEach(btn => {
                 btn.addEventListener('click', () => updatePhase(btn.dataset.phase));
             });
+
+            // Toggle curva teorica di riferimento sul grafico delle misure
+            const btnToggleTheoCurve = document.getElementById('btnToggleTheoCurve');
+            if (btnToggleTheoCurve) {
+                btnToggleTheoCurve.addEventListener('click', () => {
+                    state.showTheoCurve = !state.showTheoCurve;
+                    btnToggleTheoCurve.textContent = state.showTheoCurve ? 'Teoria: ON' : 'Teoria: OFF';
+                    btnToggleTheoCurve.className = state.showTheoCurve
+                        ? 'px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition'
+                        : 'px-1.5 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-500 border border-slate-800 transition';
+                    updateTelemetryUI();
+                });
+            }
 
             // Interazione diretta (click / drag) sulla curva SVG P(φ) per regolare φ
             const phaseSvg = document.getElementById('phaseInterferenceSvg');
@@ -1236,50 +1491,92 @@
             const modeBadge = document.getElementById('modeBadge');
             const modeDescription = document.getElementById('modeDescription');
 
-            btnModeWave.addEventListener('click', () => {
-                state.mode = 'wave';
-                btnModeWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
-                btnModePhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
-                modeBadge.textContent = 'Sovrapposizione Continua';
-                modeDescription.innerHTML = 'La luminosità dei LED è proporzionale alla densità di probabilità <span class="font-mono text-cyan-300">|ψ|²</span>. Al secondo beam splitter (BS2) i due cammini interferiscono costruttivamente o distruttivamente in base allo sfasamento <span class="font-mono text-amber-300">φ</span>.';
-            });
+            // Controllo Misura dei Cammini (Osservatore) e Cancellazione Quantistica
+            const syncObserverButtons = () => {
+                document.querySelectorAll('.branch-opt').forEach(btn => {
+                    const isSelected = btn.dataset.branch === state.observerBranch;
+                    btn.className = isSelected
+                        ? 'branch-opt px-2 py-0.5 rounded border bg-rose-500/20 text-rose-300 border-rose-500/40 transition'
+                        : 'branch-opt px-2 py-0.5 rounded border bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200 transition';
+                });
+            };
 
-            btnModePhoton.addEventListener('click', () => {
-                state.mode = 'photon';
-                btnModePhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
-                btnModeWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
-                modeBadge.textContent = 'Collasso Stocastico';
-                modeDescription.innerHTML = 'Il singolo fotone entra in sovrapposizione quantistica su entrambi i rami paralleli. All\'arrivo su <span class="font-mono text-emerald-300">D1</span> e <span class="font-mono text-violet-300">D2</span> la funzione d\'onda collassa su un solo rivelatore con probabilità <span class="font-mono text-amber-300">cos²(φ/2)</span> e <span class="font-mono text-amber-300">sin²(φ/2)</span>.';
+            const btnToggleObserver = document.getElementById('btnToggleObserver');
+            if (btnToggleObserver) {
+                btnToggleObserver.addEventListener('click', () => {
+                    state.observerActive = !state.observerActive;
+                    updateTelemetryUI();
+                });
+            }
+
+            const btnQuantumEraser = document.getElementById('btnQuantumEraser');
+            if (btnQuantumEraser) {
+                btnQuantumEraser.addEventListener('click', () => {
+                    // Cancella l'informazione di cammino ("quantum eraser") ripristinando l'interferenza
+                    state.observerActive = false;
+                    spawnPulse();
+                    updateTelemetryUI();
+                });
+            }
+
+            document.querySelectorAll('.branch-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.observerBranch = btn.dataset.branch;
+                    if (!state.observerActive) {
+                        state.observerActive = true;
+                    }
+                    syncObserverButtons();
+                    updateTelemetryUI();
+                });
             });
+            syncObserverButtons();
+
+            const setMode = (newMode) => {
+                state.mode = newMode;
+                if (newMode === 'wave') {
+                    btnModeWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
+                    btnModePhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
+                    modeBadge.textContent = 'Sovrapposizione Continua';
+                    modeDescription.innerHTML = 'La luminosità dei LED è proporzionale alla densità di probabilità <span class="font-mono text-cyan-300">|ψ|²</span>. Al secondo beam splitter (BS2) i due cammini interferiscono costruttivamente o distruttivamente in base allo sfasamento <span class="font-mono text-amber-300">φ</span>.';
+                } else {
+                    btnModePhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
+                    btnModeWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
+                    modeBadge.textContent = 'Collasso Stocastico';
+                    modeDescription.innerHTML = 'Ogni singolo fotone viaggia in sovrapposizione nei due rami paralleli e collassa su <strong class="text-emerald-400">D1</strong> o <strong class="text-violet-400">D2</strong> al momento della rivelazione secondo <span class="font-mono text-emerald-300">cos²(φ/2)</span> e <span class="font-mono text-violet-300">sin²(φ/2)</span>.';
+                }
+                updateTelemetryUI();
+            };
+
+            btnModeWave.addEventListener('click', () => setMode('wave'));
+            btnModePhoton.addEventListener('click', () => setMode('photon'));
 
             // Play / Pausa
             const btnPlayPause = document.getElementById('btnPlayPause');
             btnPlayPause.addEventListener('click', () => {
                 state.isPlaying = !state.isPlaying;
-                document.getElementById('iconPause').classList.toggle('hidden', !state.isPlaying);
-                document.getElementById('iconPlay').classList.toggle('hidden', state.isPlaying);
-                document.getElementById('labelPlayPause').textContent = state.isPlaying ? 'Pausa' : 'Riprendi';
-
-                const statusInd = document.getElementById('statusIndicator');
-                if (state.isPlaying) {
-                    statusInd.className = 'flex items-center gap-1.5 text-emerald-400';
-                    statusInd.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>IN ESECUZIONE';
-                } else {
-                    statusInd.className = 'flex items-center gap-1.5 text-amber-400';
-                    statusInd.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span>IN PAUSA';
-                }
-            });
-
-            // Singolo Impulso
-            document.getElementById('btnSinglePulse').addEventListener('click', () => {
-                spawnPulse();
+                const statusEl = document.getElementById('statusIndicator');
                 if (!state.isPlaying) {
-                    state.isPlaying = true;
+                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span> IN PAUSA';
+                    statusEl.className = 'flex items-center gap-1.5 text-amber-400';
+                    document.getElementById('iconPause').classList.add('hidden');
+                    document.getElementById('iconPlay').classList.remove('hidden');
+                    document.getElementById('labelPlayPause').textContent = 'Riprendi';
+                } else {
+                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> IN ESECUZIONE';
+                    statusEl.className = 'flex items-center gap-1.5 text-emerald-400';
                     document.getElementById('iconPause').classList.remove('hidden');
                     document.getElementById('iconPlay').classList.add('hidden');
                     document.getElementById('labelPlayPause').textContent = 'Pausa';
                 }
             });
+
+            // Singolo impulso
+            const btnSinglePulse = document.getElementById('btnSinglePulse');
+            if (btnSinglePulse) {
+                btnSinglePulse.addEventListener('click', () => {
+                    spawnPulse();
+                });
+            }
 
             // Velocità
             const speedSlider = document.getElementById('speedSlider');
@@ -1287,11 +1584,11 @@
                 state.speed = parseFloat(e.target.value);
                 document.getElementById('speedDisplay').textContent = `${state.speed.toFixed(1)}x`;
             });
-
-            // Azzera Contatori
+            // Azzera Contatori e Misure dei Rivelatori
             document.getElementById('btnResetCounters').addEventListener('click', () => {
                 state.counts.d1 = 0;
                 state.counts.d2 = 0;
+                state.phaseMeasurements = Array.from({ length: 361 }, () => ({ d1: 0, d2: 0, total: 0 }));
                 updateTelemetryUI();
             });
 
