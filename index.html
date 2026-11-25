@@ -307,7 +307,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-sm font-bold text-white tracking-tight">Rivelatori & Interferenza Quantistica</h2>
-                        <p class="text-xs text-slate-400">Probabilità teorica vs conteggi sperimentali</p>
+                        <p class="text-xs text-slate-400">Andamento P(φ), probabilità teorica e conteggi</p>
                     </div>
                     <button id="btnResetCounters" class="px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-rose-950/60 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-800/60 text-xs font-medium transition flex items-center gap-1">
                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -315,6 +315,61 @@
                         </svg>
                         <span>Azzera</span>
                     </button>
+                </div>
+
+                <!-- Curva di Interferenza P(φ) Ingrandita (Posizionata prima delle percentuali dei rivelatori) -->
+                <div id="phaseCurveCard" class="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]"></span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Curva Interferenza P(φ)</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[11px] font-mono">
+                            <span class="flex items-center gap-1 text-emerald-400 font-semibold"><span class="w-2.5 h-0.5 bg-emerald-400 inline-block"></span>D1 cos²</span>
+                            <span class="flex items-center gap-1 text-violet-400 font-semibold"><span class="w-2.5 h-0.5 bg-violet-400 inline-block"></span>D2 sin²</span>
+                            <span id="svgLivePhaseBadge" class="text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-800/50">φ = 0°</span>
+                        </div>
+                    </div>
+
+                    <svg id="phaseInterferenceSvg" viewBox="0 0 340 124" class="w-full h-32 sm:h-36 bg-[#060911] rounded-lg border border-slate-800/90 overflow-visible select-none cursor-pointer">
+                        <!-- Griglia orizzontale 0%, 25%, 50%, 75%, 100% -->
+                        <line x1="30" y1="12" x2="328" y2="12" stroke="rgba(51,65,85,0.5)" stroke-width="0.8" stroke-dasharray="2,2" />
+                        <line x1="30" y1="34.5" x2="328" y2="34.5" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,2" />
+                        <line x1="30" y1="57" x2="328" y2="57" stroke="rgba(51,65,85,0.45)" stroke-width="0.8" stroke-dasharray="2,2" />
+                        <line x1="30" y1="79.5" x2="328" y2="79.5" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,2" />
+                        <line x1="30" y1="102" x2="328" y2="102" stroke="rgba(51,65,85,0.65)" stroke-width="0.9" />
+
+                        <!-- Guide verticali fasi notevoli (90°, 180°, 270°) -->
+                        <line x1="104.5" y1="12" x2="104.5" y2="102" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,3" />
+                        <line x1="179" y1="12" x2="179" y2="102" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,3" />
+                        <line x1="253.5" y1="12" x2="253.5" y2="102" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,3" />
+
+                        <!-- Etichette asse verticale percentuali -->
+                        <text x="25" y="15" text-anchor="end" fill="#94a3b8" font-size="8" font-family="JetBrains Mono, monospace">100%</text>
+                        <text x="25" y="59.5" text-anchor="end" fill="#64748b" font-size="7.5" font-family="JetBrains Mono, monospace">50%</text>
+                        <text x="25" y="104.5" text-anchor="end" fill="#94a3b8" font-size="8" font-family="JetBrains Mono, monospace">0%</text>
+
+                        <!-- Curve calcolate dinamicamente -->
+                        <path id="svgCurveD1" d="" fill="none" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" />
+                        <path id="svgCurveD2" d="" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="4,2.5" />
+
+                        <!-- Cursore verticale fase φ corrente -->
+                        <line id="svgPhaseCursorLine" x1="30" y1="9" x2="30" y2="105" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="2.5,1.5" />
+                        <circle id="svgMarkerD1" cx="30" cy="12" r="4.2" fill="#34d399" stroke="#060911" stroke-width="1.2" />
+                        <circle id="svgMarkerD2" cx="30" cy="102" r="4.2" fill="#a78bfa" stroke="#060911" stroke-width="1.2" />
+
+                        <!-- Etichette asse orizzontale fase φ -->
+                        <text x="30" y="116" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="JetBrains Mono, monospace">0°</text>
+                        <text x="104.5" y="116" text-anchor="middle" fill="#64748b" font-size="7.5" font-family="JetBrains Mono, monospace">90°</text>
+                        <text x="179" y="116" text-anchor="middle" fill="#64748b" font-size="7.5" font-family="JetBrains Mono, monospace">180°</text>
+                        <text x="253.5" y="116" text-anchor="middle" fill="#64748b" font-size="7.5" font-family="JetBrains Mono, monospace">270°</text>
+                        <text x="328" y="116" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="JetBrains Mono, monospace">360°</text>
+                    </svg>
+                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                        <span id="svgCoordD1" class="text-emerald-400">P(D1) = 100.0%</span>
+                        <span class="text-slate-500">Clicca o trascina sul grafico per variare φ</span>
+                        <span id="svgCoordD2" class="text-violet-400">P(D2) = 0.0%</span>
+                    </div>
                 </div>
 
                 <!-- Detector D1 Card -->
@@ -385,6 +440,53 @@
                     <span>
                         Ogni riflessione su uno specchio o beam splitter introduce uno sfasamento di <span class="font-mono text-slate-200">π/2</span>. Con <span class="font-mono text-amber-300">φ = 0°</span> l'interferenza è totalmente costruttiva verso <strong class="text-emerald-400">D1</strong> e distruttiva verso <strong class="text-violet-400">D2</strong>.
                     </span>
+                </div>
+
+                <!-- Grafica Riassuntiva Percentuali D1 vs D2 -->
+                <div id="detectorSummaryChart" class="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Ripartizione Percentuale Rivelatori</span>
+                        </div>
+                        <div class="font-mono text-xs font-bold flex items-center gap-1.5">
+                            <span id="summaryRatioD1" class="text-emerald-400">100.0% D1</span>
+                            <span class="text-slate-600">/</span>
+                            <span id="summaryRatioD2" class="text-violet-400">0.0% D2</span>
+                        </div>
+                    </div>
+
+                    <!-- Barra Comparativa Teorica -->
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                            <span>Teorica Attesa (cos² / sin²)</span>
+                            <span id="summarySourceLabel" class="text-cyan-300/90">φ = 0°</span>
+                        </div>
+                        <div class="w-full h-3.5 rounded-full bg-slate-900 border border-slate-800 overflow-hidden flex">
+                            <div id="compBarTheoD1" class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-150 flex items-center justify-center text-[9px] font-mono font-bold text-slate-950 overflow-hidden" style="width: 100%">
+                                <span id="compBarTheoLabelD1">100%</span>
+                            </div>
+                            <div id="compBarTheoD2" class="h-full bg-gradient-to-r from-violet-500 to-purple-400 transition-all duration-150 flex items-center justify-center text-[9px] font-mono font-bold text-slate-950 overflow-hidden" style="width: 0%">
+                                <span id="compBarTheoLabelD2"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barra Comparativa Empirica (attiva quando N > 0) -->
+                    <div id="empiricalSection" class="space-y-1 pt-0.5 border-t border-slate-800/70">
+                        <div class="flex items-center justify-between text-[11px] font-mono">
+                            <span class="text-slate-400">Empirica Rivelata (<span id="empTotalCount" class="text-slate-200">0</span> fotoni)</span>
+                            <span id="empStatusBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">In attesa fotoni</span>
+                        </div>
+                        <div class="w-full h-2.5 rounded-full bg-slate-900 border border-slate-800 overflow-hidden flex">
+                            <div id="compBarEmpD1" class="h-full bg-emerald-400/85 transition-all duration-200" style="width: 50%"></div>
+                            <div id="compBarEmpD2" class="h-full bg-violet-400/85 transition-all duration-200" style="width: 50%"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                            <span id="empLegendD1" class="text-emerald-400/90">D1: --%</span>
+                            <span id="empLegendD2" class="text-violet-400/90">D2: --%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -849,64 +951,85 @@
             [[6, 5], [24, 5]].forEach(([bx, by]) => {
                 const cx = (bx + 0.5) * cellSize;
                 const cy = labelMarginTop + (by + 0.5) * cellSize;
-                const d = cellSize * 0.34;
-                ctx.strokeStyle = 'rgba(224, 242, 254, 0.85)';
+                const r = cellSize * 0.28;
+                ctx.strokeStyle = 'rgba(125, 211, 252, 0.75)';
                 ctx.beginPath();
-                ctx.moveTo(cx - d, cy + d);
-                ctx.lineTo(cx + d, cy - d);
+                ctx.moveTo(cx - r, cy + r);
+                ctx.lineTo(cx + r, cy - r);
                 ctx.stroke();
             });
 
-            // Etichette Ottiche Serigrafate
-            if (state.showLabels && cellSize >= 12) {
-                const fontSize = Math.max(9, Math.min(11, cellSize * 0.44));
-                ctx.font = `600 ${fontSize}px "JetBrains Mono", monospace`;
+            // Specchi M1..M4 - Piccole barre orientate
+            OPTICS.mirrors.forEach(([mx, my]) => {
+                const cx = (mx + 0.5) * cellSize;
+                const cy = labelMarginTop + (my + 0.5) * cellSize;
+                const r = cellSize * 0.24;
+                ctx.strokeStyle = 'rgba(226, 232, 240, 0.65)';
+                ctx.beginPath();
+                ctx.moveTo(cx - r, cy - r * 0.4);
+                ctx.lineTo(cx + r, cy + r * 0.4);
+                ctx.stroke();
+            });
+
+            // Etichette ottiche sul canvas se attive
+            if (state.showLabels) {
+                ctx.font = `600 ${Math.max(8, Math.min(10, cellSize * 0.34))}px "JetBrains Mono", monospace`;
                 ctx.textAlign = 'center';
 
-                // Etichette superiori
-                ctx.fillStyle = '#94a3b8';
-                ctx.fillText('M1', 6.5 * cellSize, labelMarginTop - 6);
-                ctx.fillStyle = '#fbbf24';
-                ctx.fillText(`φ=${state.phaseDeg}°`, 15.5 * cellSize, labelMarginTop - 6);
-                ctx.fillStyle = '#94a3b8';
-                ctx.fillText('M3', 24.5 * cellSize, labelMarginTop - 6);
-                ctx.fillStyle = '#34d399';
-                ctx.fillText('D1', 30.8 * cellSize, labelMarginTop - 6);
+                const drawTag = (gx, gy, text, color, above = true) => {
+                    const tx = (gx + 0.5) * cellSize;
+                    const ty = above
+                        ? labelMarginTop + gy * cellSize - 4
+                        : labelMarginTop + (gy + 1) * cellSize + 11;
+                    ctx.fillStyle = color;
+                    ctx.fillText(text, tx, ty);
+                };
 
-                // Etichette inferiori
-                const bottomY = labelMarginTop + ROWS * cellSize + fontSize + 3;
-                ctx.fillStyle = '#fb7185';
-                ctx.fillText('LASER', 1.2 * cellSize, bottomY);
-                ctx.fillStyle = '#38bdf8';
-                ctx.fillText('BS1 / M2', 6.5 * cellSize, bottomY);
-                ctx.fillStyle = '#38bdf8';
-                ctx.fillText('BS2 / M4', 24.5 * cellSize, bottomY);
-                ctx.fillStyle = '#a78bfa';
-                ctx.fillText('D2', 30.8 * cellSize, bottomY);
+                drawTag(0, 5, 'LASER', '#fb7185', false);
+                drawTag(6, 5, 'BS1', '#38bdf8', false);
+                drawTag(6, 1, 'M1', '#cbd5e1', true);
+                drawTag(6, 6, 'M2', '#cbd5e1', false);
+                drawTag(15, 0, 'PHASE φ', '#fbbf24', true);
+                drawTag(24, 1, 'M3', '#cbd5e1', true);
+                drawTag(24, 6, 'M4', '#cbd5e1', false);
+                drawTag(24, 5, 'BS2', '#38bdf8', false);
+                drawTag(30.5, 1, 'D1', '#34d399', true);
+                drawTag(30.5, 6, 'D2', '#a78bfa', false);
             }
 
-            // Evidenziazione LED al passaggio del mouse
+            // Evidenziazione cella LED sotto il cursore
             if (state.hoveredLed) {
                 const { x, y } = state.hoveredLed;
-                ctx.strokeStyle = 'rgba(6, 182, 212, 0.9)';
-                ctx.lineWidth = 1.5;
-                ctx.strokeRect(x * cellSize + 1, labelMarginTop + y * cellSize + 1, cellSize - 2, cellSize - 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.lineWidth = 1.4;
+                ctx.strokeRect(
+                    x * cellSize + 1,
+                    labelMarginTop + y * cellSize + 1,
+                    cellSize - 2,
+                    cellSize - 2
+                );
             }
 
             ctx.restore();
         }
 
-        // Aggiorna i pannelli numerici e le barre di probabilità
+        // Aggiorna i pannelli numerici, le barre di probabilità e la grafica riassuntiva
         function updateTelemetryUI() {
             const { p1, p2 } = getProbabilities();
+            const pct1 = (p1 * 100).toFixed(1);
+            const pct2 = (p2 * 100).toFixed(1);
 
-            document.getElementById('probD1Text').textContent = `${(p1 * 100).toFixed(1)}%`;
-            document.getElementById('probD2Text').textContent = `${(p2 * 100).toFixed(1)}%`;
+            document.getElementById('probD1Text').textContent = `${pct1}%`;
+            document.getElementById('probD2Text').textContent = `${pct2}%`;
 
-            document.getElementById('barD1').style.width = `${(p1 * 100).toFixed(1)}%`;
-            document.getElementById('barD2').style.width = `${(p2 * 100).toFixed(1)}%`;
+            document.getElementById('barD1').style.width = `${pct1}%`;
+            document.getElementById('barD2').style.width = `${pct2}%`;
 
             const total = state.counts.d1 + state.counts.d2;
+            const hasDetections = total > 0;
+            const empPct1 = hasDetections ? ((state.counts.d1 / total) * 100).toFixed(1) : null;
+            const empPct2 = hasDetections ? ((state.counts.d2 / total) * 100).toFixed(1) : null;
+
             const freq1 = total > 0 ? ((state.counts.d1 / total) * 100).toFixed(0) : 0;
             const freq2 = total > 0 ? ((state.counts.d2 / total) * 100).toFixed(0) : 0;
 
@@ -915,6 +1038,55 @@
 
             document.getElementById('countD2').textContent = state.counts.d2;
             document.getElementById('freqD2').textContent = `(${freq2}%)`;
+
+            // Aggiorna grafica riassuntiva comparativa D1 vs D2
+            const displayPct1 = hasDetections && state.mode === 'photon' ? empPct1 : pct1;
+            const displayPct2 = hasDetections && state.mode === 'photon' ? empPct2 : pct2;
+
+            document.getElementById('summaryRatioD1').textContent = `${displayPct1}% D1`;
+            document.getElementById('summaryRatioD2').textContent = `${displayPct2}% D2`;
+            document.getElementById('summarySourceLabel').textContent = `φ = ${state.phaseDeg}°`;
+
+            const theoBar1 = document.getElementById('compBarTheoD1');
+            const theoBar2 = document.getElementById('compBarTheoD2');
+            theoBar1.style.width = `${pct1}%`;
+            theoBar2.style.width = `${pct2}%`;
+            document.getElementById('compBarTheoLabelD1').textContent = p1 >= 0.14 ? `${Math.round(p1 * 100)}%` : '';
+            document.getElementById('compBarTheoLabelD2').textContent = p2 >= 0.14 ? `${Math.round(p2 * 100)}%` : '';
+
+            // Aggiorna sezione empirica misurata sui conteggi N1 / N2
+            document.getElementById('empTotalCount').textContent = total;
+            const empBar1 = document.getElementById('compBarEmpD1');
+            const empBar2 = document.getElementById('compBarEmpD2');
+            const empBadge = document.getElementById('empStatusBadge');
+            const empLegend1 = document.getElementById('empLegendD1');
+            const empLegend2 = document.getElementById('empLegendD2');
+
+            if (hasDetections) {
+                empBar1.style.width = `${empPct1}%`;
+                empBar2.style.width = `${empPct2}%`;
+                empLegend1.textContent = `D1: ${empPct1}% (${state.counts.d1})`;
+                empLegend2.textContent = `D2: ${empPct2}% (${state.counts.d2})`;
+                const delta = Math.abs(parseFloat(empPct1) - parseFloat(pct1)).toFixed(1);
+                empBadge.textContent = `Δ = ${delta}%`;
+                empBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-800/60';
+            } else {
+                empBar1.style.width = '50%';
+                empBar2.style.width = '50%';
+                empLegend1.textContent = 'D1: --%';
+                empLegend2.textContent = 'D2: --%';
+                empBadge.textContent = 'In attesa fotoni';
+                empBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800';
+            }
+
+            // Aggiorna cursore e marker sulla curva SVG P(φ)
+            updatePhaseSvgChart(p1, p2);
+            const livePhaseBadge = document.getElementById('svgLivePhaseBadge');
+            const coordD1 = document.getElementById('svgCoordD1');
+            const coordD2 = document.getElementById('svgCoordD2');
+            if (livePhaseBadge) livePhaseBadge.textContent = `φ = ${state.phaseDeg}°`;
+            if (coordD1) coordD1.textContent = `P(D1) = ${pct1}%`;
+            if (coordD2) coordD2.textContent = `P(D2) = ${pct2}%`;
 
             // Effetto bagliore sulle card dei rivelatori quando scattano
             const cardD1 = document.getElementById('cardD1');
@@ -939,6 +1111,67 @@
                 cardD2.classList.remove('border-violet-500/70', 'shadow-[0_0_20px_rgba(139,92,246,0.2)]');
                 ledD2.style.backgroundColor = 'rgba(139, 92, 246, 0.25)';
                 ledD2.style.boxShadow = 'none';
+            }
+        }
+
+        // Inizializza e aggiorna il mini grafico SVG delle probabilità P(φ) al variare di φ (0°..360°)
+        function updatePhaseSvgChart(currentP1, currentP2) {
+            const curveD1El = document.getElementById('svgCurveD1');
+            const curveD2El = document.getElementById('svgCurveD2');
+            if (!curveD1El || !curveD2El) return;
+
+            const plotLeft = 30;
+            const plotRight = 328;
+            const plotTop = 12;
+            const plotBottom = 102;
+            const plotWidth = plotRight - plotLeft;
+            const plotHeight = plotBottom - plotTop;
+
+            // Genera i path delle curve teoriche una sola volta se non ancora popolati
+            if (!curveD1El.getAttribute('d')) {
+                let d1Path = '';
+                let d2Path = '';
+                const steps = 90;
+
+                for (let i = 0; i <= steps; i++) {
+                    const deg = (i / steps) * 360;
+                    const rad = (deg * Math.PI) / 180;
+                    const prob1 = Math.pow(Math.cos(rad / 2), 2);
+                    const prob2 = Math.pow(Math.sin(rad / 2), 2);
+
+                    const x = plotLeft + (deg / 360) * plotWidth;
+                    const y1 = plotBottom - prob1 * plotHeight;
+                    const y2 = plotBottom - prob2 * plotHeight;
+
+                    const prefix = i === 0 ? 'M' : 'L';
+                    d1Path += `${prefix}${x.toFixed(1)},${y1.toFixed(1)} `;
+                    d2Path += `${prefix}${x.toFixed(1)},${y2.toFixed(1)} `;
+                }
+
+                curveD1El.setAttribute('d', d1Path.trim());
+                curveD2El.setAttribute('d', d2Path.trim());
+            }
+
+            // Posiziona cursore verticale e punti attivi per la fase φ corrente
+            const cursorX = plotLeft + (state.phaseDeg / 360) * plotWidth;
+            const markerY1 = plotBottom - currentP1 * plotHeight;
+            const markerY2 = plotBottom - currentP2 * plotHeight;
+
+            const cursorLine = document.getElementById('svgPhaseCursorLine');
+            const marker1 = document.getElementById('svgMarkerD1');
+            const marker2 = document.getElementById('svgMarkerD2');
+
+            if (cursorLine) {
+                cursorLine.setAttribute('x1', cursorX.toFixed(1));
+                cursorLine.setAttribute('x2', cursorX.toFixed(1));
+            }
+            if (marker1) {
+                marker1.setAttribute('cx', cursorX.toFixed(1));
+                marker1.setAttribute('cy', markerY1.toFixed(1));
+            }
+            if (marker2) {
+                marker2.setAttribute('cx', cursorX.toFixed(1));
+                marker2.setAttribute('cy', markerY2.toFixed(1));
             }
         }
 
@@ -977,6 +1210,39 @@
             document.querySelectorAll('.preset-phase').forEach(btn => {
                 btn.addEventListener('click', () => updatePhase(btn.dataset.phase));
             });
+
+            // Interazione diretta (click / drag) sulla curva SVG P(φ) per regolare φ
+            const phaseSvg = document.getElementById('phaseInterferenceSvg');
+            if (phaseSvg) {
+                let isDraggingSvg = false;
+                const setPhaseFromSvgPointer = (clientX) => {
+                    const rect = phaseSvg.getBoundingClientRect();
+                    if (!rect.width) return;
+                    const viewBoxWidth = 340;
+                    const plotLeft = 30;
+                    const plotRight = 328;
+                    const svgX = ((clientX - rect.left) / rect.width) * viewBoxWidth;
+                    const norm = Math.max(0, Math.min(1, (svgX - plotLeft) / (plotRight - plotLeft)));
+                    updatePhase(Math.round(norm * 360));
+                };
+
+                phaseSvg.addEventListener('mousedown', (e) => {
+                    isDraggingSvg = true;
+                    setPhaseFromSvgPointer(e.clientX);
+                });
+                window.addEventListener('mousemove', (e) => {
+                    if (isDraggingSvg) setPhaseFromSvgPointer(e.clientX);
+                });
+                window.addEventListener('mouseup', () => {
+                    isDraggingSvg = false;
+                });
+                phaseSvg.addEventListener('touchstart', (e) => {
+                    if (e.touches.length > 0) setPhaseFromSvgPointer(e.touches[0].clientX);
+                }, { passive: true });
+                phaseSvg.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) setPhaseFromSvgPointer(e.touches[0].clientX);
+                }, { passive: true });
+            }
 
             // Switch Modalità Onda vs Fotone Singolo
             const btnModeWave = document.getElementById('btnModeWave');
