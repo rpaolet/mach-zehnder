@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interferometro di Mach-Zehnder - Matrice LED 8x32</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        lab: {
+                            bg: '#080b12',
+                            panel: '#101622',
+                            border: '#1e293b',
+                            accent: '#06b6d4',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #080b12;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #1e293b;
+            border-radius: 999px;
+            border: 1px solid #334155;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #06b6d4;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+            transition: transform 0.1s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #22d3ee;
+        }
+
+        /* Hardware PCB Grid Texture */
+        .pcb-board {
+            background-color: #090d14;
+            background-image: 
+                radial-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(8, 11, 18, 0.98));
+            background-size: 16px 16px, 100% 100%;
+            box-shadow: 
+                inset 0 2px 15px rgba(0, 0, 0, 0.9),
+                0 15px 35px -5px rgba(0, 0, 0, 0.7),
+                0 0 0 1px rgba(51, 65, 85, 0.5);
+        }
+
+        .screw-head {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #64748b, #1e293b);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);
+            position: relative;
+        }
+        .screw-head::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 2px;
+            right: 2px;
+            height: 1.5px;
+            background: #0f172a;
+            transform: rotate(35deg);
+        }
+
+        /* Custom Scrollbar for code modal */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500/30 selection:text-cyan-200">
+
+    <!-- Top Header -->
+    <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">Interferometro di Mach-Zehnder</h1>
+                        <span class="px-2 py-0.5 text-[11px] font-mono font-semibold bg-cyan-950 text-cyan-300 border border-cyan-800/60 rounded-full">WS2812B 8×32</span>
+                    </div>
+                    <p class="text-xs text-slate-400 hidden sm:block">Simulazione quantistica di sovrapposizione, sfasamento φ e collasso del fotone su matrice LED</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button id="btnToggleLabels" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    <span>Etichette Ottiche</span>
+                </button>
+                <button id="btnOpenArduino" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 transition flex items-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.15)]">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                    <span>Codice Arduino C++</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 flex flex-col gap-5">
+
+        <!-- LED Matrix Hardware Board Container -->
+        <section class="pcb-board rounded-2xl p-3 sm:p-5 relative overflow-hidden">
+            <!-- Corner PCB Mounting Screws -->
+            <div class="screw-head absolute top-2.5 left-2.5"></div>
+            <div class="screw-head absolute top-2.5 right-2.5"></div>
+            <div class="screw-head absolute bottom-2.5 left-2.5"></div>
+            <div class="screw-head absolute bottom-2.5 right-2.5"></div>
+
+            <!-- Hardware Silkscreen Header -->
+            <div class="flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400 px-3 mb-2 gap-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-slate-300 font-semibold tracking-wider">MATRIX-8x32-MZ-REV2</span>
+                    <span class="hidden md:inline text-slate-500">|</span>
+                    <span class="hidden md:inline">PIN: D6 (WS2812B)</span>
+                    <span class="hidden sm:inline text-slate-500">|</span>
+                    <span id="statusIndicator" class="flex items-center gap-1.5 text-emerald-400">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        IN ESECUZIONE
+                    </span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="hoverCoords" class="text-slate-400">LED: [--, --]</span>
+                    <span class="text-cyan-400/90">5V DC / 256 PIXEL</span>
+                </div>
+            </div>
+
+            <!-- Responsive Canvas Wrapper -->
+            <div id="canvasContainer" class="w-full relative rounded-xl bg-[#04060a] border border-slate-800/90 p-1.5 sm:p-2 shadow-inner">
+                <canvas id="ledCanvas" class="w-full block rounded-lg cursor-crosshair"></canvas>
+            </div>
+
+            <!-- Component Legend Strip -->
+            <div id="legendStrip" class="mt-3 px-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-slate-300 transition-all duration-300">
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_#f43f5e]"></span>
+                    <span>Sorgente Laser / Fotone</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8]"></span>
+                    <span>Beam Splitter (BS1 / BS2 50:50)</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-full bg-slate-300 shadow-[0_0_6px_#cbd5e1]"></span>
+                    <span>Specchi (M1 / M2)</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]"></span>
+                    <span>Sfasatore (Phase Shifter φ)</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-full bg-cyan-300 shadow-[0_0_8px_#67e8f9]"></span>
+                    <span>Pacchetto d'Onda / Fotone</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+                    <span>Rivelatori (D1 / D2)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Control Deck & Quantum Telemetry Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+            <!-- Left Column: Simulation Controls & Phase Shifter (7 cols) -->
+            <div class="lg:col-span-7 bg-lab-panel border border-lab-border rounded-2xl p-5 flex flex-col justify-between gap-5 shadow-lg">
+                
+                <!-- Simulation Mode Switcher -->
+                <div>
+                    <div class="flex items-center justify-between mb-2.5">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Modalità di Propagazione Quantistica</label>
+                        <span id="modeBadge" class="text-[11px] font-mono text-cyan-400 bg-cyan-950/70 px-2 py-0.5 rounded border border-cyan-800/50">Sovrapposizione Continua</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-1 bg-slate-950 rounded-xl border border-slate-800">
+                        <button id="btnModeWave" class="py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                            <span>Onda / Pacchetto |ψ|²</span>
+                        </button>
+                        <button id="btnModePhoton" class="py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                            <span>Fotone Singolo (Collasso)</span>
+                        </button>
+                    </div>
+                    <p id="modeDescription" class="text-xs text-slate-400 mt-2 leading-relaxed">
+                        La luminosità dei LED è proporzionale alla densità di probabilità <span class="font-mono text-cyan-300">|ψ|²</span>. Al secondo beam splitter (BS2) i due cammini interferiscono costruttivamente o distruttivamente in base allo sfasamento <span class="font-mono text-amber-300">φ</span>.
+                    </p>
+                </div>
+
+                <!-- Phase Shifter Slider -->
+                <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]"></span>
+                            <span class="text-sm font-semibold text-white">Sfasatore Ottico (Phase Shifter φ)</span>
+                        </div>
+                        <div class="flex items-center gap-2 font-mono">
+                            <span id="phaseDegDisplay" class="text-base font-bold text-amber-400">0°</span>
+                            <span class="text-slate-600">/</span>
+                            <span id="phaseRadDisplay" class="text-xs text-slate-300">0.00 π rad</span>
+                        </div>
+                    </div>
+
+                    <input id="phaseSlider" type="range" min="0" max="360" step="1" value="0" class="w-full mb-3">
+
+                    <!-- Quick Presets -->
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="text-[11px] text-slate-400">Preset Interferenza:</span>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button data-phase="0" class="preset-phase px-2.5 py-1 text-xs font-mono rounded-md bg-slate-800 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/40 border border-slate-700 transition">0° (100% D1)</button>
+                            <button data-phase="90" class="preset-phase px-2.5 py-1 text-xs font-mono rounded-md bg-slate-800 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/40 border border-slate-700 transition">90° (50/50)</button>
+                            <button data-phase="180" class="preset-phase px-2.5 py-1 text-xs font-mono rounded-md bg-slate-800 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/40 border border-slate-700 transition">180° (100% D2)</button>
+                            <button data-phase="270" class="preset-phase px-2.5 py-1 text-xs font-mono rounded-md bg-slate-800 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/40 border border-slate-700 transition">270° (50/50)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transport & Speed Controls -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                    <div class="flex items-center gap-2">
+                        <button id="btnPlayPause" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                            <svg id="iconPause" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            <svg id="iconPlay" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                            </svg>
+                            <span id="labelPlayPause">Pausa</span>
+                        </button>
+
+                        <button id="btnSinglePulse" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs sm:text-sm border border-slate-700 transition flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                            </svg>
+                            <span>Singolo Impulso</span>
+                        </button>
+                    </div>
+
+                    <!-- Speed Slider -->
+                    <div class="flex items-center gap-2.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 flex-grow sm:flex-grow-0">
+                        <span class="text-xs text-slate-400 whitespace-nowrap">Velocità:</span>
+                        <input id="speedSlider" type="range" min="0.3" max="2.5" step="0.1" value="1.0" class="w-24 sm:w-28">
+                        <span id="speedDisplay" class="text-xs font-mono text-cyan-400 w-9 text-right">1.0x</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Detectors Telemetry & Quantum Probabilities (5 cols) -->
+            <div class="lg:col-span-5 bg-lab-panel border border-lab-border rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-lg">
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-sm font-bold text-white tracking-tight">Rivelatori & Interferenza Quantistica</h2>
+                        <p class="text-xs text-slate-400">Probabilità teorica vs conteggi sperimentali</p>
+                    </div>
+                    <button id="btnResetCounters" class="px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-rose-950/60 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-800/60 text-xs font-medium transition flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span>Azzera</span>
+                    </button>
+                </div>
+
+                <!-- Detector D1 Card -->
+                <div id="cardD1" class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 transition-all duration-150">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <div class="flex items-center gap-2">
+                            <span id="ledIndicatorD1" class="w-3 h-3 rounded-full bg-emerald-500/30 border border-emerald-400/50 transition-all"></span>
+                            <span class="font-bold text-sm text-white">Rivelatore D1 <span class="text-xs font-normal text-slate-400">(Uscita Alta)</span></span>
+                        </div>
+                        <span class="font-mono text-xs text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">P(D1) = cos²(φ/2)</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 my-2">
+                        <div>
+                            <div class="text-[11px] text-slate-400">Probabilità Teorica</div>
+                            <div id="probD1Text" class="text-lg font-mono font-bold text-emerald-400">100.0%</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[11px] text-slate-400">Fotoni Rivelati (N1)</div>
+                            <div class="text-lg font-mono font-bold text-white">
+                                <span id="countD1">0</span>
+                                <span id="freqD1" class="text-xs font-normal text-slate-400 ml-1">(0%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                        <div id="barD1" class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-150" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <!-- Detector D2 Card -->
+                <div id="cardD2" class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 transition-all duration-150">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <div class="flex items-center gap-2">
+                            <span id="ledIndicatorD2" class="w-3 h-3 rounded-full bg-violet-500/30 border border-violet-400/50 transition-all"></span>
+                            <span class="font-bold text-sm text-white">Rivelatore D2 <span class="text-xs font-normal text-slate-400">(Uscita Bassa)</span></span>
+                        </div>
+                        <span class="font-mono text-xs text-violet-400 bg-violet-950/60 px-2 py-0.5 rounded border border-violet-800/50">P(D2) = sin²(φ/2)</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 my-2">
+                        <div>
+                            <div class="text-[11px] text-slate-400">Probabilità Teorica</div>
+                            <div id="probD2Text" class="text-lg font-mono font-bold text-violet-400">0.0%</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[11px] text-slate-400">Fotoni Rivelati (N2)</div>
+                            <div class="text-lg font-mono font-bold text-white">
+                                <span id="countD2">0</span>
+                                <span id="freqD2" class="text-xs font-normal text-slate-400 ml-1">(0%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                        <div id="barD2" class="h-full bg-gradient-to-r from-violet-600 to-violet-400 transition-all duration-150" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Physics Note -->
+                <div class="text-[11px] text-slate-400 bg-slate-900/60 border border-slate-800/80 rounded-lg p-2.5 flex items-start gap-2">
+                    <svg class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>
+                        Ogni riflessione su uno specchio o beam splitter introduce uno sfasamento di <span class="font-mono text-slate-200">π/2</span>. Con <span class="font-mono text-amber-300">φ = 0°</span> l'interferenza è totalmente costruttiva verso <strong class="text-emerald-400">D1</strong> e distruttiva verso <strong class="text-violet-400">D2</strong>.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Arduino / FastLED Code Modal -->
+    <div id="arduinoModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-mono font-bold text-sm">
+                        C++
+                    </div>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-bold text-white">Sketch Arduino / ESP32 (FastLED 8×32)</h3>
+                        <p class="text-xs text-slate-400">Codice pronto per matrice LED WS2812B 8×32 con potenziometro sfasatore</p>
+                    </div>
+                </div>
+                <button id="btnCloseArduino" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Code Content -->
+            <div class="p-4 overflow-y-auto bg-[#06090f] font-mono text-xs text-slate-300 leading-relaxed flex-grow">
+                <pre id="arduinoCodeBlock" class="select-all whitespace-pre-wrap"></pre>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-5 py-3.5 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-3">
+                <span class="text-xs text-slate-400">Collegamento: Data Pin <code class="text-cyan-400">D6</code>, Potenziometro φ su <code class="text-amber-400">A0</code></span>
+                <div class="flex items-center gap-2">
+                    <span id="copyFeedback" class="text-xs text-emerald-400 font-medium opacity-0 transition-opacity">Copiato negli appunti!</span>
+                    <button id="btnCopyCode" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                        <span>Copia Codice</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * SIMULATORE INTERFEROMETRO DI MACH-ZEHNDER SU MATRICE LED 8x32
+         * -----------------------------------------------------------
+         * Griglia: 32 colonne (x: 0..31) x 8 righe (y: 0..7)
+         *
+         * Geometria ottica sulla matrice 8x32:
+         * - Sorgente Laser/Fotone: (0, 5)
+         * - Ingresso orizzontale: (1,5) -> (5,5)
+         * - BS1 (Beam Splitter 1): (6, 5) [divide in due cammini]
+         * - Ramo Superiore:
+         *     Sale da (6,5) -> (6,4) -> (6,3) -> (6,2) -> (6,1) [Specchio M1]
+         *     Prosegue orizzontalmente: (7,1) ... (24,1) [Specchio M3]
+         *     Con Sfasatore (Phase Shifter φ) posizionato attorno a x=15, y=1 (evidenziato su y=0 e y=1)
+         *     Scende da (24,1) -> (24,2) -> (24,3) -> (24,4) -> (24,5) [BS2]
+         * - Ramo Inferiore:
+         *     Scende da (6,5) -> (6,6) [Specchio M2]
+         *     Prosegue orizzontalmente: (7,6) ... (24,6) [Specchio M4]
+         *     Sale da (24,6) -> (24,5) [BS2]
+         * - BS2 (Beam Splitter 2): (24, 5) [ricombina e interferisce]
+         * - Uscita verso D1 (Interferenza cos²(φ/2)):
+         *     Da (24,5) -> (25,5) -> (26,4) -> (27,3) -> (28,2) -> (29,2) -> Rivelatore D1 (30..31, 1..2)
+         * - Uscita verso D2 (Interferenza sin²(φ/2)):
+         *     Da (24,5) -> (25,5) -> (26,5) -> (27,5) -> (28,5) -> (29,5) -> Rivelatore D2 (30..31, 5..6)
+         */
+
+        const COLS = 32;
+        const ROWS = 8;
+
+        // Definizione dei cammini discreti (sequenza ordinata di coordinate LED [x, y])
+        const PATH_INPUT = [
+            [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5]
+        ]; // 6 step (indice 0..5, arriva a BS1 al passo 5)
+
+        // Ramo Superiore: da BS1 (6,5) -> M1 (6,1) -> lungo y=1 -> M3 (24,1) -> BS2 (24,5)
+        // Lunghezza totale: 4 (salita) + 18 (orizzontale) + 4 (discesa) = 26 step
+        const PATH_UPPER = [
+            [6, 4], [6, 3], [6, 2], [6, 1], // Salita fino a M1 (6,1)
+            [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1], [14, 1],
+            [15, 1], // Centro Phase Shifter φ
+            [16, 1], [17, 1], [18, 1], [19, 1], [20, 1], [21, 1], [22, 1], [23, 1], [24, 1], // Fino a M3 (24,1)
+            [24, 2], [24, 3], [24, 4], [24, 5] // Discesa fino a BS2 (24,5)
+        ];
+
+        // Ramo Inferiore: da BS1 (6,5) -> M2 (6,6) -> lungo y=6 -> M4 (24,6) -> BS2 (24,5)
+        // Per sincronia perfetta dell'interferometro bilanciato (cammini di ugual lunghezza ottica),
+        // mappiamo lo stesso tempo normalizzato [0..1] su entrambi i rami paralleli!
+        const PATH_LOWER = [
+            [6, 6], // M2 (6,6)
+            [7, 6], [8, 6], [9, 6], [10, 6], [11, 6], [12, 6], [13, 6], [14, 6],
+            [15, 6], [16, 6], [17, 6], [18, 6], [19, 6], [20, 6], [21, 6], [22, 6], [23, 6], [24, 6], // Fino a M4 (24,6)
+            [24, 5] // Salita a BS2 (24,5)
+        ];
+
+        // Uscita verso D1 (Alto): da BS2 (24,5) -> (30,2)
+        const PATH_OUT_D1 = [
+            [25, 4], [26, 3], [27, 2], [28, 2], [29, 2], [30, 2]
+        ];
+
+        // Uscita verso D2 (Basso): da BS2 (24,5) -> (30,5)
+        const PATH_OUT_D2 = [
+            [25, 5], [26, 5], [27, 5], [28, 5], [29, 5], [30, 5]
+        ];
+
+        // Componenti ottici fissi sulla matrice
+        const OPTICS = {
+            source: [[0, 5]],
+            bs1: [[6, 5]],
+            bs2: [[24, 5]],
+            mirrors: [
+                [6, 1],  // M1 (Alto-Sinistra)
+                [6, 6],  // M2 (Basso-Sinistra)
+                [24, 1], // M3 (Alto-Destra)
+                [24, 6]  // M4 (Basso-Destra)
+            ],
+            phaseShifter: [
+                [14, 0], [15, 0], [16, 0] // Indicatori LED sopra il ramo superiore
+            ],
+            detector1: [
+                [30, 1], [31, 1],
+                [30, 2], [31, 2]
+            ],
+            detector2: [
+                [30, 5], [31, 5],
+                [30, 6], [31, 6]
+            ]
+        };
+
+        // Stato globale della simulazione
+        const state = {
+            mode: 'wave',           // 'wave' | 'photon'
+            phaseDeg: 0,            // 0 .. 360 gradi
+            isPlaying: true,
+            speed: 1.0,
+            showLabels: true,
+            pulses: [],             // Array di pacchetti d'onda / fotoni attivi
+            spawnTimer: 0,
+            counts: { d1: 0, d2: 0 },
+            flashD1: 0,             // Intensità flash rivelatore D1 (0..1)
+            flashD2: 0,             // Intensità flash rivelatore D2 (0..1)
+            hoveredLed: null
+        };
+
+        // Buffer frame 8x32 RGB
+        let ledBuffer = Array.from({ length: ROWS }, () =>
+            Array.from({ length: COLS }, () => ({ r: 10, g: 14, b: 22, glow: 0 }))
+        );
+
+        // Elementi DOM
+        const canvas = document.getElementById('ledCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('canvasContainer');
+
+        // Calcolo probabilità quantistiche
+        function getProbabilities() {
+            const phiRad = (state.phaseDeg * Math.PI) / 180;
+            const p1 = Math.pow(Math.cos(phiRad / 2), 2);
+            const p2 = Math.pow(Math.sin(phiRad / 2), 2);
+            return { p1, p2, phiRad };
+        }
+
+        // Genera un nuovo pacchetto d'onda o fotone singolo
+        function spawnPulse() {
+            const { p1 } = getProbabilities();
+            // In modalità fotone singolo, l'esito del collasso viene determinato secondo Born rule
+            const collapsedTarget = Math.random() < p1 ? 'd1' : 'd2';
+
+            state.pulses.push({
+                progress: 0, // 0.0 -> 3.0 (0..1 ingresso, 1..2 rami paralleli, 2..3 uscita)
+                collapsedTarget,
+                measured: false,
+                phaseAtShift: state.phaseDeg
+            });
+        }
+
+        // Aggiorna la logica fisica e i LED ad ogni frame
+        function updateSimulation(dt) {
+            // Decadimento morbido dei flash dei rivelatori
+            state.flashD1 = Math.max(0, state.flashD1 - dt * 2.2);
+            state.flashD2 = Math.max(0, state.flashD2 - dt * 2.2);
+
+            if (!state.isPlaying) return;
+
+            // Spawn automatico continuo
+            state.spawnTimer += dt * state.speed;
+            const spawnInterval = state.mode === 'wave' ? 1.55 : 2.1;
+            if (state.spawnTimer >= spawnInterval) {
+                state.spawnTimer = 0;
+                spawnPulse();
+            }
+
+            // Avanzamento dei pacchetti
+            const velocity = 0.85 * state.speed;
+            for (let i = state.pulses.length - 1; i >= 0; i--) {
+                const p = state.pulses[i];
+                p.progress += dt * velocity;
+
+                // Aggiorna dinamicamente lo sfasamento mentre il pacchetto attraversa la zona centrale
+                if (p.progress < 1.6) {
+                    p.phaseAtShift = state.phaseDeg;
+                    const { p1 } = getProbabilities();
+                    p.collapsedTarget = Math.random() < p1 ? 'd1' : 'd2';
+                }
+
+                // Momento della rivelazione (progress >= 2.85)
+                if (!p.measured && p.progress >= 2.85) {
+                    p.measured = true;
+                    const { p1, p2 } = getProbabilities();
+
+                    if (state.mode === 'photon') {
+                        if (p.collapsedTarget === 'd1') {
+                            state.counts.d1++;
+                            state.flashD1 = 1.0;
+                        } else {
+                            state.counts.d2++;
+                            state.flashD2 = 1.0;
+                        }
+                    } else {
+                        // In modalità onda, illumina entrambi i rivelatori proporzionalmente all'intensità
+                        state.flashD1 = Math.max(state.flashD1, p1);
+                        state.flashD2 = Math.max(state.flashD2, p2);
+                        if (p1 > 0.5) state.counts.d1++;
+                        if (p2 > 0.5) state.counts.d2++;
+                    }
+                    updateTelemetryUI();
+                }
+
+                // Rimuovi pacchetti completati
+                if (p.progress >= 3.15) {
+                    state.pulses.splice(i, 1);
+                }
+            }
+        }
+
+        // Helper per impostare il colore di un LED nel buffer (additive blending)
+        function setLed(x, y, r, g, b, glow = 0.5, additive = false) {
+            if (x < 0 || x >= COLS || y < 0 || y >= ROWS) return;
+            const cell = ledBuffer[y][x];
+            if (additive) {
+                cell.r = Math.min(255, cell.r + r);
+                cell.g = Math.min(255, cell.g + g);
+                cell.b = Math.min(255, cell.b + b);
+                cell.glow = Math.min(1, Math.max(cell.glow, glow));
+            } else {
+                cell.r = r;
+                cell.g = g;
+                cell.b = b;
+                cell.glow = glow;
+            }
+        }
+
+        // Disegna un pacchetto gaussiano lungo un array di coordinate
+        function renderWavePacketOnPath(pathArray, normalizedPos, intensity, colorRGB) {
+            if (intensity <= 0.02) return;
+            const exactIdx = normalizedPos * (pathArray.length - 1);
+            const sigma = 1.15; // Larghezza del pacchetto d'onda
+
+            for (let idx = 0; idx < pathArray.length; idx++) {
+                const dist = Math.abs(idx - exactIdx);
+                if (dist <= 3.0) {
+                    const envelope = Math.exp(-(dist * dist) / (2 * sigma * sigma));
+                    const alpha = envelope * intensity;
+                    if (alpha > 0.03) {
+                        const [px, py] = pathArray[idx];
+                        setLed(
+                            px, py,
+                            Math.round(colorRGB.r * alpha),
+                            Math.round(colorRGB.g * alpha),
+                            Math.round(colorRGB.b * alpha),
+                            alpha,
+                            true
+                        );
+                    }
+                }
+            }
+        }
+
+        // Costruisce il frame LED 8x32 completo
+        function computeLedFrame() {
+            // 1. Reset sfondo matriz LED (LED spenti ma visibili come capsule grigio-scuro)
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    ledBuffer[y][x] = { r: 13, g: 18, b: 28, glow: 0 };
+                }
+            }
+
+            // 2. Guide ottiche deboli (traccia dei percorsi paralleli per chiarezza visiva)
+            const traceColor = { r: 16, g: 26, b: 42 };
+            [...PATH_INPUT, ...PATH_UPPER, ...PATH_LOWER, ...PATH_OUT_D1, ...PATH_OUT_D2].forEach(([x, y]) => {
+                setLed(x, y, traceColor.r, traceColor.g, traceColor.b, 0);
+            });
+
+            // 3. Componenti Ottici Passivi
+            // Sorgente Laser (Rosso rubino)
+            OPTICS.source.forEach(([x, y]) => setLed(x, y, 244, 63, 94, 0.85));
+
+            // Specchi M1, M2, M3, M4 (Bianco-argento freddo)
+            OPTICS.mirrors.forEach(([x, y]) => setLed(x, y, 160, 185, 215, 0.45));
+
+            // Beam Splitters BS1 & BS2 (Azzurro semitrasparente)
+            OPTICS.bs1.forEach(([x, y]) => setLed(x, y, 56, 189, 248, 0.75));
+            OPTICS.bs2.forEach(([x, y]) => setLed(x, y, 56, 189, 248, 0.75));
+
+            // Phase Shifter φ (Ambra/Oro - luminosità modulata dall'angolo φ)
+            const phaseNorm = state.phaseDeg / 360;
+            const psBrightness = 0.35 + 0.65 * Math.sin(phaseNorm * Math.PI);
+            OPTICS.phaseShifter.forEach(([x, y]) => {
+                setLed(x, y, Math.round(251 * psBrightness), Math.round(180 * psBrightness), 24, psBrightness * 0.8);
+            });
+
+            // 4. Propagazione Pacchetti d'Onda / Fotoni
+            const { p1, p2 } = getProbabilities();
+
+            state.pulses.forEach(pulse => {
+                const t = pulse.progress;
+
+                if (t < 1.0) {
+                    // Fase 1: Dalla sorgente al Beam Splitter 1 (BS1)
+                    renderWavePacketOnPath(PATH_INPUT, t, 1.0, { r: 255, g: 90, b: 120 });
+                } else if (t < 2.0) {
+                    // Fase 2: Sovrapposizione nei due rami paralleli (Superiore e Inferiore)
+                    const branchT = t - 1.0;
+
+                    // Ramo Inferiore (non sfasato - ciano brillante)
+                    renderWavePacketOnPath(PATH_LOWER, branchT, 0.72, { r: 34, g: 211, b: 238 });
+
+                    // Ramo Superiore (attraversa lo sfasatore φ attorno a branchT = 0.5)
+                    const passedShifter = branchT > 0.48;
+                    const upperColor = passedShifter && state.phaseDeg > 10
+                        ? { r: 251, g: 191, b: 36 }  // Tinta ambrata dopo lo sfasamento φ
+                        : { r: 34, g: 211, b: 238 }; // Ciano prima dello sfasatore
+
+                    renderWavePacketOnPath(PATH_UPPER, branchT, 0.72, upperColor);
+                } else {
+                    // Fase 3: Dopo BS2 - Interferenza quantistica verso D1 e D2
+                    const outT = Math.min(1.0, t - 2.0);
+
+                    if (state.mode === 'wave') {
+                        // Modalità Onda: entrambi i rami di uscita mostrano l'ampiezza di probabilità
+                        renderWavePacketOnPath(PATH_OUT_D1, outT, p1, { r: 52, g: 211, b: 153 }); // Verde smeraldo D1
+                        renderWavePacketOnPath(PATH_OUT_D2, outT, p2, { r: 167, g: 139, b: 250 }); // Viola D2
+                    } else {
+                        // Modalità Fotone Singolo: collasso su uno dei due rivelatori
+                        if (pulse.collapsedTarget === 'd1') {
+                            renderWavePacketOnPath(PATH_OUT_D1, outT, 1.0, { r: 52, g: 211, b: 153 });
+                        } else {
+                            renderWavePacketOnPath(PATH_OUT_D2, outT, 1.0, { r: 167, g: 139, b: 250 });
+                        }
+                    }
+                }
+            });
+
+            // 5. Rivelatori D1 e D2 (Blocco 2x2 LED ciascuno)
+            const d1Base = 45 + Math.round(state.flashD1 * 210);
+            OPTICS.detector1.forEach(([x, y]) => {
+                setLed(x, y, Math.round(state.flashD1 * 40), d1Base, Math.round(90 + state.flashD1 * 110), 0.3 + state.flashD1 * 0.7);
+            });
+
+            const d2Base = 45 + Math.round(state.flashD2 * 210);
+            OPTICS.detector2.forEach(([x, y]) => {
+                setLed(x, y, Math.round(90 + state.flashD2 * 110), Math.round(state.flashD2 * 60), d2Base, 0.3 + state.flashD2 * 0.7);
+            });
+        }
+
+        // Rendering ad alta definizione sul Canvas HTML5
+        function drawCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = container.getBoundingClientRect();
+            const width = rect.width - 16; // Sottrae padding interno
+            if (width <= 0) return;
+
+            // Proporzione 32:8 = 4:1 (leggermente aumentata in altezza per etichette ottiche)
+            const labelMarginTop = state.showLabels ? 20 : 6;
+            const labelMarginBottom = state.showLabels ? 20 : 6;
+            const cellSize = width / COLS;
+            const height = cellSize * ROWS + labelMarginTop + labelMarginBottom;
+
+            if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
+                canvas.width = Math.round(width * dpr);
+                canvas.height = Math.round(height * dpr);
+                canvas.style.height = `${height}px`;
+            }
+
+            ctx.save();
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, width, height);
+
+            // Disegno griglia sottile PCB
+            ctx.strokeStyle = 'rgba(30, 41, 59, 0.35)';
+            ctx.lineWidth = 0.5;
+            for (let x = 0; x <= COLS; x++) {
+                ctx.beginPath();
+                ctx.moveTo(x * cellSize, labelMarginTop);
+                ctx.lineTo(x * cellSize, labelMarginTop + ROWS * cellSize);
+                ctx.stroke();
+            }
+            for (let y = 0; y <= ROWS; y++) {
+                ctx.beginPath();
+                ctx.moveTo(0, labelMarginTop + y * cellSize);
+                ctx.lineTo(width, labelMarginTop + y * cellSize);
+                ctx.stroke();
+            }
+
+            // Disegno dei 256 LED WS2812B
+            const ledRadius = cellSize * 0.36;
+
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    const led = ledBuffer[y][x];
+                    const cx = (x + 0.5) * cellSize;
+                    const cy = labelMarginTop + (y + 0.5) * cellSize;
+
+                    // Alone luminoso (Glow) se il LED è acceso
+                    if (led.glow > 0.05) {
+                        const grad = ctx.createRadialGradient(cx, cy, ledRadius * 0.2, cx, cy, ledRadius * 2.3);
+                        grad.addColorStop(0, `rgba(${led.r}, ${led.g}, ${led.b}, ${led.glow * 0.75})`);
+                        grad.addColorStop(1, `rgba(${led.r}, ${led.g}, ${led.b}, 0)`);
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, ledRadius * 2.3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    // Involucro SMD 5050 arrotondato
+                    const boxSize = cellSize * 0.76;
+                    ctx.fillStyle = '#0c111b';
+                    ctx.strokeStyle = 'rgba(51, 65, 85, 0.45)';
+                    ctx.lineWidth = 0.8;
+                    ctx.beginPath();
+                    ctx.roundRect(cx - boxSize / 2, cy - boxSize / 2, boxSize, boxSize, cellSize * 0.16);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Lente centrale del LED
+                    ctx.fillStyle = `rgb(${led.r}, ${led.g}, ${led.b})`;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, ledRadius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Punto luce speculare interno per effetto lente reale
+                    if (led.glow > 0.15) {
+                        ctx.fillStyle = `rgba(255, 255, 255, ${led.glow * 0.65})`;
+                        ctx.beginPath();
+                        ctx.arc(cx - ledRadius * 0.25, cy - ledRadius * 0.25, ledRadius * 0.32, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Indicatori diagonali su BS1, BS2 e Specchi (M1..M4)
+            ctx.lineWidth = Math.max(1.5, cellSize * 0.08);
+            ctx.lineCap = 'round';
+
+            // BS1 (6,5) e BS2 (24,5) - Linea diagonale a 45°
+            [[6, 5], [24, 5]].forEach(([bx, by]) => {
+                const cx = (bx + 0.5) * cellSize;
+                const cy = labelMarginTop + (by + 0.5) * cellSize;
+                const d = cellSize * 0.34;
+                ctx.strokeStyle = 'rgba(224, 242, 254, 0.85)';
+                ctx.beginPath();
+                ctx.moveTo(cx - d, cy + d);
+                ctx.lineTo(cx + d, cy - d);
+                ctx.stroke();
+            });
+
+            // Etichette Ottiche Serigrafate
+            if (state.showLabels && cellSize >= 12) {
+                const fontSize = Math.max(9, Math.min(11, cellSize * 0.44));
+                ctx.font = `600 ${fontSize}px "JetBrains Mono", monospace`;
+                ctx.textAlign = 'center';
+
+                // Etichette superiori
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText('M1', 6.5 * cellSize, labelMarginTop - 6);
+                ctx.fillStyle = '#fbbf24';
+                ctx.fillText(`φ=${state.phaseDeg}°`, 15.5 * cellSize, labelMarginTop - 6);
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText('M3', 24.5 * cellSize, labelMarginTop - 6);
+                ctx.fillStyle = '#34d399';
+                ctx.fillText('D1', 30.8 * cellSize, labelMarginTop - 6);
+
+                // Etichette inferiori
+                const bottomY = labelMarginTop + ROWS * cellSize + fontSize + 3;
+                ctx.fillStyle = '#fb7185';
+                ctx.fillText('LASER', 1.2 * cellSize, bottomY);
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillText('BS1 / M2', 6.5 * cellSize, bottomY);
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillText('BS2 / M4', 24.5 * cellSize, bottomY);
+                ctx.fillStyle = '#a78bfa';
+                ctx.fillText('D2', 30.8 * cellSize, bottomY);
+            }
+
+            // Evidenziazione LED al passaggio del mouse
+            if (state.hoveredLed) {
+                const { x, y } = state.hoveredLed;
+                ctx.strokeStyle = 'rgba(6, 182, 212, 0.9)';
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(x * cellSize + 1, labelMarginTop + y * cellSize + 1, cellSize - 2, cellSize - 2);
+            }
+
+            ctx.restore();
+        }
+
+        // Aggiorna i pannelli numerici e le barre di probabilità
+        function updateTelemetryUI() {
+            const { p1, p2 } = getProbabilities();
+
+            document.getElementById('probD1Text').textContent = `${(p1 * 100).toFixed(1)}%`;
+            document.getElementById('probD2Text').textContent = `${(p2 * 100).toFixed(1)}%`;
+
+            document.getElementById('barD1').style.width = `${(p1 * 100).toFixed(1)}%`;
+            document.getElementById('barD2').style.width = `${(p2 * 100).toFixed(1)}%`;
+
+            const total = state.counts.d1 + state.counts.d2;
+            const freq1 = total > 0 ? ((state.counts.d1 / total) * 100).toFixed(0) : 0;
+            const freq2 = total > 0 ? ((state.counts.d2 / total) * 100).toFixed(0) : 0;
+
+            document.getElementById('countD1').textContent = state.counts.d1;
+            document.getElementById('freqD1').textContent = `(${freq1}%)`;
+
+            document.getElementById('countD2').textContent = state.counts.d2;
+            document.getElementById('freqD2').textContent = `(${freq2}%)`;
+
+            // Effetto bagliore sulle card dei rivelatori quando scattano
+            const cardD1 = document.getElementById('cardD1');
+            const ledD1 = document.getElementById('ledIndicatorD1');
+            if (state.flashD1 > 0.25) {
+                cardD1.classList.add('border-emerald-500/70', 'shadow-[0_0_20px_rgba(16,185,129,0.2)]');
+                ledD1.style.backgroundColor = '#34d399';
+                ledD1.style.boxShadow = '0 0 12px #34d399';
+            } else {
+                cardD1.classList.remove('border-emerald-500/70', 'shadow-[0_0_20px_rgba(16,185,129,0.2)]');
+                ledD1.style.backgroundColor = 'rgba(16, 185, 129, 0.25)';
+                ledD1.style.boxShadow = 'none';
+            }
+
+            const cardD2 = document.getElementById('cardD2');
+            const ledD2 = document.getElementById('ledIndicatorD2');
+            if (state.flashD2 > 0.25) {
+                cardD2.classList.add('border-violet-500/70', 'shadow-[0_0_20px_rgba(139,92,246,0.2)]');
+                ledD2.style.backgroundColor = '#a78bfa';
+                ledD2.style.boxShadow = '0 0 12px #a78bfa';
+            } else {
+                cardD2.classList.remove('border-violet-500/70', 'shadow-[0_0_20px_rgba(139,92,246,0.2)]');
+                ledD2.style.backgroundColor = 'rgba(139, 92, 246, 0.25)';
+                ledD2.style.boxShadow = 'none';
+            }
+        }
+
+        // Loop principale d'animazione
+        let lastTimestamp = performance.now();
+        function animationLoop(now) {
+            const dt = Math.min(0.05, (now - lastTimestamp) / 1000);
+            lastTimestamp = now;
+
+            updateSimulation(dt);
+            computeLedFrame();
+            drawCanvas();
+
+            // Aggiorna bagliori UI in tempo reale
+            if (state.flashD1 > 0.01 || state.flashD2 > 0.01) {
+                updateTelemetryUI();
+            }
+
+            requestAnimationFrame(animationLoop);
+        }
+
+        // Gestione Eventi UI
+        function initEventListeners() {
+            // Slider Sfasamento φ
+            const phaseSlider = document.getElementById('phaseSlider');
+            const updatePhase = (val) => {
+                state.phaseDeg = parseInt(val, 10);
+                phaseSlider.value = state.phaseDeg;
+                document.getElementById('phaseDegDisplay').textContent = `${state.phaseDeg}°`;
+                document.getElementById('phaseRadDisplay').textContent = `${(state.phaseDeg / 180).toFixed(2)} π rad`;
+                updateTelemetryUI();
+            };
+
+            phaseSlider.addEventListener('input', (e) => updatePhase(e.target.value));
+
+            document.querySelectorAll('.preset-phase').forEach(btn => {
+                btn.addEventListener('click', () => updatePhase(btn.dataset.phase));
+            });
+
+            // Switch Modalità Onda vs Fotone Singolo
+            const btnModeWave = document.getElementById('btnModeWave');
+            const btnModePhoton = document.getElementById('btnModePhoton');
+            const modeBadge = document.getElementById('modeBadge');
+            const modeDescription = document.getElementById('modeDescription');
+
+            btnModeWave.addEventListener('click', () => {
+                state.mode = 'wave';
+                btnModeWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
+                btnModePhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
+                modeBadge.textContent = 'Sovrapposizione Continua';
+                modeDescription.innerHTML = 'La luminosità dei LED è proporzionale alla densità di probabilità <span class="font-mono text-cyan-300">|ψ|²</span>. Al secondo beam splitter (BS2) i due cammini interferiscono costruttivamente o distruttivamente in base allo sfasamento <span class="font-mono text-amber-300">φ</span>.';
+            });
+
+            btnModePhoton.addEventListener('click', () => {
+                state.mode = 'photon';
+                btnModePhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
+                btnModeWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
+                modeBadge.textContent = 'Collasso Stocastico';
+                modeDescription.innerHTML = 'Il singolo fotone entra in sovrapposizione quantistica su entrambi i rami paralleli. All\'arrivo su <span class="font-mono text-emerald-300">D1</span> e <span class="font-mono text-violet-300">D2</span> la funzione d\'onda collassa su un solo rivelatore con probabilità <span class="font-mono text-amber-300">cos²(φ/2)</span> e <span class="font-mono text-amber-300">sin²(φ/2)</span>.';
+            });
+
+            // Play / Pausa
+            const btnPlayPause = document.getElementById('btnPlayPause');
+            btnPlayPause.addEventListener('click', () => {
+                state.isPlaying = !state.isPlaying;
+                document.getElementById('iconPause').classList.toggle('hidden', !state.isPlaying);
+                document.getElementById('iconPlay').classList.toggle('hidden', state.isPlaying);
+                document.getElementById('labelPlayPause').textContent = state.isPlaying ? 'Pausa' : 'Riprendi';
+
+                const statusInd = document.getElementById('statusIndicator');
+                if (state.isPlaying) {
+                    statusInd.className = 'flex items-center gap-1.5 text-emerald-400';
+                    statusInd.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>IN ESECUZIONE';
+                } else {
+                    statusInd.className = 'flex items-center gap-1.5 text-amber-400';
+                    statusInd.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span>IN PAUSA';
+                }
+            });
+
+            // Singolo Impulso
+            document.getElementById('btnSinglePulse').addEventListener('click', () => {
+                spawnPulse();
+                if (!state.isPlaying) {
+                    state.isPlaying = true;
+                    document.getElementById('iconPause').classList.remove('hidden');
+                    document.getElementById('iconPlay').classList.add('hidden');
+                    document.getElementById('labelPlayPause').textContent = 'Pausa';
+                }
+            });
+
+            // Velocità
+            const speedSlider = document.getElementById('speedSlider');
+            speedSlider.addEventListener('input', (e) => {
+                state.speed = parseFloat(e.target.value);
+                document.getElementById('speedDisplay').textContent = `${state.speed.toFixed(1)}x`;
+            });
+
+            // Azzera Contatori
+            document.getElementById('btnResetCounters').addEventListener('click', () => {
+                state.counts.d1 = 0;
+                state.counts.d2 = 0;
+                updateTelemetryUI();
+            });
+
+            // Toggle Etichette Ottiche
+            document.getElementById('btnToggleLabels').addEventListener('click', () => {
+                state.showLabels = !state.showLabels;
+                document.getElementById('legendStrip').classList.toggle('hidden', !state.showLabels);
+            });
+
+            // Coordinate LED al passaggio del mouse / touch
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const labelMarginTop = state.showLabels ? 20 : 6;
+                const cellSize = rect.width / COLS;
+                const x = Math.floor((e.clientX - rect.left) / cellSize);
+                const y = Math.floor((e.clientY - rect.top - labelMarginTop) / cellSize);
+
+                if (x >= 0 && x < COLS && y >= 0 && y < ROWS) {
+                    state.hoveredLed = { x, y };
+                    const serpentineIdx = (x % 2 === 0) ? (x * ROWS + y) : (x * ROWS + (ROWS - 1 - y));
+                    document.getElementById('hoverCoords').textContent = `LED: [x=${x}, y=${y}] (Idx #${serpentineIdx})`;
+                } else {
+                    state.hoveredLed = null;
+                    document.getElementById('hoverCoords').textContent = 'LED: [--, --]';
+                }
+            });
+
+            canvas.addEventListener('mouseleave', () => {
+                state.hoveredLed = null;
+                document.getElementById('hoverCoords').textContent = 'LED: [--, --]';
+            });
+
+            // Modale Codice Arduino C++
+            const modal = document.getElementById('arduinoModal');
+            document.getElementById('arduinoCodeBlock').textContent = generateArduinoCode();
+
+            document.getElementById('btnOpenArduino').addEventListener('click', () => {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            });
+
+            document.getElementById('btnCloseArduino').addEventListener('click', () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            });
+
+            // Copia Codice negli appunti (compatibile iframe)
+            document.getElementById('btnCopyCode').addEventListener('click', () => {
+                const codeText = document.getElementById('arduinoCodeBlock').textContent;
+                const tempArea = document.createElement('textarea');
+                tempArea.value = codeText;
+                document.body.appendChild(tempArea);
+                tempArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempArea);
+
+                const feedback = document.getElementById('copyFeedback');
+                feedback.classList.remove('opacity-0');
+                setTimeout(() => feedback.classList.add('opacity-0'), 2200);
+            });
+        }
+
+        // Genera il codice C++ per Arduino / ESP32 con libreria FastLED
+        function generateArduinoCode() {
+            return `#include <FastLED.h>
+#include <math.h>
+
+// Configurazione Matrice LED WS2812B 8x32 (256 LED)
+#define LED_PIN     6
+#define POT_PIN     A0      // Potenziometro per sfasamento phi (0 - 2*PI)
+#define NUM_COLS    32
+#define NUM_ROWS    8
+#define NUM_LEDS    (NUM_COLS * NUM_ROWS)
+#define BRIGHTNESS  65
+
+CRGB leds[NUM_LEDS];
+
+// Conversione coordinate (x, y) -> indice LED (cablaggio a serpentina verticale tipico 8x32)
+uint16_t XY(uint8_t x, uint8_t y) {
+  if (x >= NUM_COLS || y >= NUM_ROWS) return 0;
+  if (x % 2 == 0) {
+    return (x * NUM_ROWS) + y;
+  } else {
+    return (x * NUM_ROWS) + (NUM_ROWS - 1 - y);
+  }
+}
+
+// Percorso di ingresso: Sorgente (0,5) -> BS1 (6,5)
+const uint8_t pathIn[][2] = {{1,5}, {2,5}, {3,5}, {4,5}, {5,5}, {6,5}};
+// Ramo superiore parallelo: BS1 -> M1(6,1) -> Sfasatore -> M3(24,1) -> BS2(24,5)
+const uint8_t pathUpper[][2] = {
+  {6,4},{6,3},{6,2},{6,1},
+  {7,1},{8,1},{9,1},{10,1},{11,1},{12,1},{13,1},{14,1},{15,1},
+  {16,1},{17,1},{18,1},{19,1},{20,1},{21,1},{22,1},{23,1},{24,1},
+  {24,2},{24,3},{24,4},{24,5}
+};
+// Ramo inferiore parallelo: BS1 -> M2(6,6) -> M4(24,6) -> BS2(24,5)
+const uint8_t pathLower[][2] = {
+  {6,6},{7,6},{8,6},{9,6},{10,6},{11,6},{12,6},{13,6},{14,6},{15,6},
+  {16,6},{17,6},{18,6},{19,6},{20,6},{21,6},{22,6},{23,6},{24,6},{24,5}
+};
+// Uscite verso Rivelatore D1 (alto) e D2 (basso)
+const uint8_t pathOutD1[][2] = {{25,4}, {26,3}, {27,2}, {28,2}, {29,2}, {30,2}};
+const uint8_t pathOutD2[][2] = {{25,5}, {26,5}, {27,5}, {28,5}, {29,5}, {30,5}};
+
+float progress = 0.0;
+
+void setup() {
+  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.setBrightness(BRIGHTNESS);
+  randomSeed(analogRead(A1));
+}
+
+void drawOptics(float phi) {
+  // Sorgente Laser (0,5)
+  leds[XY(0, 5)] = CRGB(240, 30, 70);
+  // Beam Splitters BS1 (6,5) e BS2 (24,5)
+  leds[XY(6, 5)]  = CRGB(40, 170, 255);
+  leds[XY(24, 5)] = CRGB(40, 170, 255);
+  // Specchi M1..M4
+  leds[XY(6, 1)] = leds[XY(6, 6)] = leds[XY(24, 1)] = leds[XY(24, 6)] = CRGB(120, 140, 160);
+  // Indicatore Sfasatore (Phase Shifter phi)
+  uint8_t psVal = 80 + (uint8_t)(175.0 * (phi / TWO_PI));
+  leds[XY(14, 0)] = leds[XY(15, 0)] = leds[XY(16, 0)] = CRGB(psVal, psVal * 0.65, 0);
+}
+
+void loop() {
+  // Legge lo sfasamento phi dal potenziometro (0 .. 2*PI)
+  float phi = (analogRead(POT_PIN) / 1023.0) * TWO_PI;
+  float probD1 = pow(cos(phi / 2.0), 2);
+  float probD2 = pow(sin(phi / 2.0), 2);
+
+  FastLED.clear();
+  drawOptics(phi);
+
+  if (progress < 1.0) {
+    // 1. Fotone verso BS1
+    int idx = progress * 5;
+    leds[XY(pathIn[idx][0], pathIn[idx][1])] = CRGB(255, 80, 110);
+  } 
+  else if (progress < 2.0) {
+    // 2. Sovrapposizione nei due percorsi paralleli
+    float t = progress - 1.0;
+    int idxU = t * 25;
+    int idxL = t * 19;
+    leds[XY(pathUpper[idxU][0], pathUpper[idxU][1])] += (t > 0.5) ? CRGB(250, 180, 30) : CRGB(30, 210, 240);
+    leds[XY(pathLower[idxL][0], pathLower[idxL][1])] += CRGB(30, 210, 240);
+  } 
+  else {
+    // 3. Interferenza dopo BS2 verso i due rivelatori separati
+    float t = min(1.0f, progress - 2.0f);
+    int idxOut = t * 5;
+    leds[XY(pathOutD1[idxOut][0], pathOutD1[idxOut][1])] += CRGB(0, (uint8_t)(255 * probD1), (uint8_t)(120 * probD1));
+    leds[XY(pathOutD2[idxOut][0], pathOutD2[idxOut][1])] += CRGB((uint8_t)(160 * probD2), 0, (uint8_t)(255 * probD2));
+
+    if (t > 0.85) {
+      // Illumina i blocchi rivelatori 2x2 D1 e D2
+      CRGB colD1 = CRGB(0, (uint8_t)(255 * probD1), (uint8_t)(100 * probD1));
+      CRGB colD2 = CRGB((uint8_t)(150 * probD2), 0, (uint8_t)(255 * probD2));
+      leds[XY(30,1)] = leds[XY(31,1)] = leds[XY(30,2)] = leds[XY(31,2)] = colD1;
+      leds[XY(30,5)] = leds[XY(31,5)] = leds[XY(30,6)] = leds[XY(31,6)] = colD2;
+    }
+  }
+
+  FastLED.show();
+  progress += 0.035;
+  if (progress >= 3.1) progress = 0.0;
+  delay(25);
+}`;
+        }
+
+        // Avvio all'onload della finestra
+        window.onload = function () {
+            initEventListeners();
+            updateTelemetryUI();
+            spawnPulse();
+            requestAnimationFrame(animationLoop);
+        };
+    </script>
+</body>
+</html>
