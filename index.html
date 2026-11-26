@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interferometro di Mach-Zehnder - Matrice LED 8x32</title>
+    <title>Interferometro di Mach-Zehnder - Banco Ottico</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <script>
@@ -63,17 +63,17 @@
             background: #22d3ee;
         }
 
-        /* Hardware PCB Grid Texture */
+        /* Hardware Optical Breadboard Texture */
         .pcb-board {
             background-color: #090d14;
             background-image: 
-                radial-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(8, 11, 18, 0.98));
-            background-size: 16px 16px, 100% 100%;
+                radial-gradient(rgba(148, 163, 184, 0.14) 1.2px, transparent 1.2px),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.92), rgba(7, 10, 17, 0.99));
+            background-size: 24px 24px, 100% 100%;
             box-shadow: 
-                inset 0 2px 15px rgba(0, 0, 0, 0.9),
-                0 15px 35px -5px rgba(0, 0, 0, 0.7),
-                0 0 0 1px rgba(51, 65, 85, 0.5);
+                inset 0 2px 18px rgba(0, 0, 0, 0.92),
+                0 15px 35px -5px rgba(0, 0, 0, 0.75),
+                0 0 0 1px rgba(51, 65, 85, 0.6);
         }
 
         .screw-head {
@@ -126,9 +126,9 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">Interferometro di Mach-Zehnder</h1>
-                        <span class="px-2 py-0.5 text-[11px] font-mono font-semibold bg-cyan-950 text-cyan-300 border border-cyan-800/60 rounded-full">WS2812B 8×32</span>
+                        <span class="px-2 py-0.5 text-[11px] font-mono font-semibold bg-cyan-950 text-cyan-300 border border-cyan-800/60 rounded-full">BANCO OTTICO</span>
                     </div>
-                    <p class="text-xs text-slate-400 hidden sm:block">Simulazione quantistica di sovrapposizione, sfasamento φ e collasso del fotone su matrice LED</p>
+                    <p class="text-xs text-slate-400 hidden sm:block">Simulazione quantistica su tavolo ottico con beam splitter, propagazione d'onda, sfasamento φ e collasso del fotone</p>
                 </div>
             </div>
 
@@ -139,12 +139,6 @@
                     </svg>
                     <span>Etichette Ottiche</span>
                 </button>
-                <button id="btnOpenArduino" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 transition flex items-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.15)]">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                    </svg>
-                    <span>Codice Arduino C++</span>
-                </button>
             </div>
         </div>
     </header>
@@ -152,20 +146,20 @@
     <!-- Main Workspace -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 flex flex-col gap-5">
 
-        <!-- LED Matrix Hardware Board Container -->
+        <!-- Optical Bench Breadboard Container -->
         <section class="pcb-board rounded-2xl p-3 sm:p-5 relative overflow-hidden">
-            <!-- Corner PCB Mounting Screws -->
+            <!-- Corner Mounting Screws -->
             <div class="screw-head absolute top-2.5 left-2.5"></div>
             <div class="screw-head absolute top-2.5 right-2.5"></div>
             <div class="screw-head absolute bottom-2.5 left-2.5"></div>
             <div class="screw-head absolute bottom-2.5 right-2.5"></div>
 
-            <!-- Hardware Silkscreen Header -->
+            <!-- Optical Breadboard Silkscreen Header -->
             <div class="flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400 px-3 mb-2 gap-2">
                 <div class="flex items-center gap-3">
-                    <span class="text-slate-300 font-semibold tracking-wider">MATRIX-8x32-MZ-REV2</span>
+                    <span class="text-slate-300 font-semibold tracking-wider">OPTICAL-BENCH-MZI-01</span>
                     <span class="hidden md:inline text-slate-500">|</span>
-                    <span class="hidden md:inline">PIN: D6 (WS2812B)</span>
+                    <span class="hidden md:inline">λ = 632.8 nm (He-Ne)</span>
                     <span class="hidden sm:inline text-slate-500">|</span>
                     <span id="statusIndicator" class="flex items-center gap-1.5 text-emerald-400">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -173,18 +167,22 @@
                     </span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <span id="hoverCoords" class="text-slate-400">LED: [--, --]</span>
-                    <span class="text-cyan-400/90">5V DC / 256 PIXEL</span>
+                    <span id="hoverCoords" class="text-slate-400">Banco Ottico: M6 × 25mm</span>
+                    <span class="text-cyan-400/90">BS 50:50 / INTERFERENZA</span>
                 </div>
             </div>
 
             <!-- Responsive Canvas Wrapper -->
-            <div id="canvasContainer" class="w-full relative rounded-xl bg-[#04060a] border border-slate-800/90 p-1.5 sm:p-2 shadow-inner">
+            <div id="canvasContainer" class="w-full relative rounded-xl bg-[#05080f] border border-slate-800/90 p-1.5 sm:p-2 shadow-inner">
                 <canvas id="ledCanvas" class="w-full block rounded-lg cursor-crosshair"></canvas>
             </div>
 
             <!-- Component Legend Strip -->
             <div id="legendStrip" class="mt-3 px-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-slate-300 transition-all duration-300">
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-sm bg-sky-400/80 border border-sky-200 shadow-[0_0_8px_#38bdf8]"></span>
+                    <span>Beam Splitter 50:50 (BS1, BS2)</span>
+                </div>
                 <div class="flex items-center gap-1.5">
                     <span class="w-3 h-3 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]"></span>
                     <span>Sfasatore Ottico (Phase Shifter φ)</span>
@@ -231,7 +229,7 @@
                             </button>
                         </div>
                         <p id="modeDescription" class="text-xs text-slate-400 mt-2 leading-relaxed">
-                            La luminosità dei LED è proporzionale alla densità di probabilità <span class="font-mono text-cyan-300">|ψ|²</span>. Al secondo beam splitter (BS2) i due cammini interferiscono costruttivamente o distruttivamente in base allo sfasamento <span class="font-mono text-amber-300">φ</span>.
+                            La luminosità e l'ampiezza dell'onda lungo il fascio sono proporzionali alla densità di probabilità <span class="font-mono text-cyan-300">|ψ|²</span>. Al secondo beam splitter (BS2) i due cammini interferiscono in base allo sfasamento <span class="font-mono text-amber-300">φ</span>.
                         </p>
                     </div>
 
@@ -339,17 +337,22 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]"></span>
-                            <span class="text-sm font-bold text-white">Curva Interferenza Misurata P(φ)</span>
+                            <span class="text-sm font-bold text-white">Curva di Interferenza P(φ)</span>
                         </div>
                         <div class="flex flex-wrap items-center gap-2 text-[11px] font-mono">
-                            <span class="flex items-center gap-1 text-emerald-400 font-semibold"><span class="w-2.5 h-0.5 bg-emerald-400 inline-block"></span>D1 Mis.</span>
-                            <span class="flex items-center gap-1 text-violet-400 font-semibold"><span class="w-2.5 h-0.5 bg-violet-400 inline-block"></span>D2 Mis.</span>
-                            <button id="btnToggleTheoCurve" type="button" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Mostra o nascondi il riferimento teorico">Teoria: ON</button>
+                            <span class="flex items-center gap-1 text-emerald-400 font-semibold"><span class="w-2.5 h-0.5 bg-emerald-400 inline-block"></span>D1 cos²(φ/2)</span>
+                            <span class="flex items-center gap-1 text-violet-400 font-semibold"><span class="w-2.5 h-0.5 bg-violet-400 inline-block"></span>D2 sin²(φ/2)</span>
+                            <button id="btnToggleTheoCurve" type="button" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Mostra o nascondi le curve teoriche">Curva: ON</button>
                             <span id="svgLivePhaseBadge" class="text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/50">φ = 0°</span>
                         </div>
                     </div>
 
                     <svg id="phaseInterferenceSvg" viewBox="0 0 340 124" class="w-full h-44 sm:h-52 flex-grow bg-[#060911] rounded-xl border border-slate-800/90 overflow-visible select-none cursor-pointer">
+                        <!-- Etichette asse verticale percentuale -->
+                        <text x="25" y="14" text-anchor="end" fill="#64748b" font-size="7" font-family="JetBrains Mono, monospace">100%</text>
+                        <text x="25" y="59" text-anchor="end" fill="#64748b" font-size="7" font-family="JetBrains Mono, monospace">50%</text>
+                        <text x="25" y="104" text-anchor="end" fill="#64748b" font-size="7" font-family="JetBrains Mono, monospace">0%</text>
+
                         <!-- Griglia orizzontale 0%, 25%, 50%, 75%, 100% -->
                         <line x1="30" y1="12" x2="328" y2="12" stroke="rgba(51,65,85,0.5)" stroke-width="0.8" stroke-dasharray="2,2" />
                         <line x1="30" y1="34.5" x2="328" y2="34.5" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,2" />
@@ -360,21 +363,23 @@
                         <!-- Guide verticali fasi notevoli (90°, 180°, 270°) -->
                         <line x1="104.5" y1="12" x2="104.5" y2="102" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,3" />
                         <line x1="179" y1="12" x2="179" y2="102" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,3" />
-                        <!-- Curve di riferimento teoriche (opzionali) -->
-                        <path id="svgTheoD1" d="" fill="none" stroke="#34d399" stroke-width="1.1" stroke-dasharray="2,2.5" opacity="0.32" />
-                        <path id="svgTheoD2" d="" fill="none" stroke="#a78bfa" stroke-width="1.1" stroke-dasharray="2,2.5" opacity="0.32" />
+                        <line x1="253.5" y1="12" x2="253.5" y2="102" stroke="rgba(51,65,85,0.3)" stroke-width="0.7" stroke-dasharray="2,3" />
 
-                        <!-- Curve calcolate dalle misure effettuate dai rivelatori -->
-                        <path id="svgCurveD1" d="" fill="none" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" />
-                        <path id="svgCurveD2" d="" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="4,2.5" />
+                        <!-- Curve teoriche cos²(φ/2) e sin²(φ/2) ben evidenti -->
+                        <path id="svgTheoD1" d="" fill="none" stroke="#34d399" stroke-width="2.3" stroke-linecap="round" opacity="0.95" />
+                        <path id="svgTheoD2" d="" fill="none" stroke="#a78bfa" stroke-width="2.3" stroke-linecap="round" stroke-dasharray="5,3" opacity="0.95" />
+
+                        <!-- Polilinea empirica delle misure effettuate dai rivelatori -->
+                        <path id="svgCurveD1" d="" fill="none" stroke="#6ee7b7" stroke-width="1.4" stroke-linecap="round" opacity="0.8" />
+                        <path id="svgCurveD2" d="" fill="none" stroke="#c4b5fd" stroke-width="1.4" stroke-linecap="round" opacity="0.8" />
 
                         <!-- Marker delle singole misure registrate -->
                         <g id="svgMeasuredPoints"></g>
 
                         <!-- Cursore verticale fase φ corrente -->
                         <line id="svgPhaseCursorLine" x1="30" y1="9" x2="30" y2="105" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="2.5,1.5" />
-                        <circle id="svgMarkerD1" cx="30" cy="12" r="4.2" fill="#34d399" stroke="#060911" stroke-width="1.2" />
-                        <circle id="svgMarkerD2" cx="30" cy="102" r="4.2" fill="#a78bfa" stroke="#060911" stroke-width="1.2" />
+                        <circle id="svgMarkerD1" cx="30" cy="12" r="4.5" fill="#34d399" stroke="#060911" stroke-width="1.3" />
+                        <circle id="svgMarkerD2" cx="30" cy="102" r="4.5" fill="#a78bfa" stroke="#060911" stroke-width="1.3" />
 
                         <!-- Etichette asse orizzontale fase φ -->
                         <text x="30" y="116" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="JetBrains Mono, monospace">0°</text>
@@ -524,1256 +529,857 @@
         </div>
     </main>
 
-    <!-- Arduino / FastLED Code Modal -->
-    <div id="arduinoModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
-            <!-- Modal Header -->
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-mono font-bold text-sm">
-                        C++
-                    </div>
-                    <div>
-                        <h3 class="text-sm sm:text-base font-bold text-white">Sketch Arduino / ESP32 (FastLED 8×32)</h3>
-                        <p class="text-xs text-slate-400">Codice pronto per matrice LED WS2812B 8×32 con potenziometro sfasatore</p>
-                    </div>
-                </div>
-                <button id="btnCloseArduino" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Modal Code Content -->
-            <div class="p-4 overflow-y-auto bg-[#06090f] font-mono text-xs text-slate-300 leading-relaxed flex-grow">
-                <pre id="arduinoCodeBlock" class="select-all whitespace-pre-wrap"></pre>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="px-5 py-3.5 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-3">
-                <span class="text-xs text-slate-400">Collegamento: Data Pin <code class="text-cyan-400">D6</code>, Potenziometro φ su <code class="text-amber-400">A0</code></span>
-                <div class="flex items-center gap-2">
-                    <span id="copyFeedback" class="text-xs text-emerald-400 font-medium opacity-0 transition-opacity">Copiato negli appunti!</span>
-                    <button id="btnCopyCode" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition flex items-center gap-1.5">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                        </svg>
-                        <span>Copia Codice</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         /**
-         * SIMULATORE INTERFEROMETRO DI MACH-ZEHNDER SU MATRICE LED 8x32
-         * -----------------------------------------------------------
-         * Griglia: 32 colonne (x: 0..31) x 8 righe (y: 0..7)
-         *
-         * Geometria ottica sulla matrice 8x32:
-         * - Sorgente Laser/Fotone: (0, 5)
-         * - Ingresso orizzontale: (1,5) -> (5,5)
-         * - BS1 (Beam Splitter 1): (6, 5) [divide in due cammini]
-         * - Ramo Superiore:
-         *     Sale da (6,5) -> (6,4) -> (6,3) -> (6,2) -> (6,1) [Specchio M1]
-         *     Prosegue orizzontalmente: (7,1) ... (24,1) [Specchio M3]
-         *     Con Sfasatore (Phase Shifter φ) posizionato attorno a x=15, y=1 (evidenziato su y=0 e y=1)
-         *     Scende da (24,1) -> (24,2) -> (24,3) -> (24,4) -> (24,5) [BS2]
-         * - Ramo Inferiore:
-         *     Scende da (6,5) -> (6,6) [Specchio M2]
-         *     Prosegue orizzontalmente: (7,6) ... (24,6) [Specchio M4]
-         *     Sale da (24,6) -> (24,5) [BS2]
-         * - BS2 (Beam Splitter 2): (24, 5) [ricombina e interferisce]
-         * - Uscita verso D1 (Interferenza cos²(φ/2)):
-         *     Da (24,5) -> (25,5) -> (26,4) -> (27,3) -> (28,2) -> (29,2) -> Rivelatore D1 (30..31, 1..2)
-         * - Uscita verso D2 (Interferenza sin²(φ/2)):
-         *     Da (24,5) -> (25,5) -> (26,5) -> (27,5) -> (28,5) -> (29,5) -> Rivelatore D2 (30..31, 5..6)
+         * SIMULATORE INTERFEROMETRO DI MACH-ZEHNDER SU BANCO OTTICO
+         * --------------------------------------------------------
+         * Coordinate normalizzate sul banco ottico: x in [0..1000], y in [0..320]
+         * - Sorgente Laser: (85, 215)
+         * - BS1 (Beam Splitter 1): (255, 215)
+         *     -> Ramo riflesso verso l'alto fino allo Specchio M1: (255, 75)
+         *     -> Ramo trasmesso in basso fino allo Specchio M2: (690, 215)
+         * - Ramo Superiore: M1 (255, 75) -> Sfasatore φ (470, 75) -> BS2 (690, 75)
+         * - Ramo Inferiore: BS1 (255, 215) -> M2 (690, 215) -> BS2 (690, 75)
+         * - BS2 (Beam Splitter 2): (690, 75)
+         *     -> Uscita orizzontale verso Rivelatore D1: (895, 75)
+         *     -> Uscita verticale verso l'alto verso Rivelatore D2: (690, 18) -> deviata o rivelata direttamente in alto/basso
          */
 
-        const COLS = 32;
-        const ROWS = 8;
+        const BENCH = {
+            width: 1000,
+            height: 310,
+            laser: { x: 82, y: 215 },
+            bs1: { x: 255, y: 215 },
+            m1: { x: 255, y: 78 },
+            shifter: { x: 472, y: 78 },
+            m2: { x: 690, y: 215 },
+            bs2: { x: 690, y: 78 },
+            d1: { x: 895, y: 78 },
+            d2Mirror: { x: 760, y: 150 },
+            d2: { x: 895, y: 215 }
+        };
 
-        // Definizione dei cammini discreti (sequenza ordinata di coordinate LED [x, y])
-        const PATH_INPUT = [
-            [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5]
-        ]; // 6 step (indice 0..5, arriva a BS1 al passo 5)
-
-        // Ramo Superiore: da BS1 (6,5) -> M1 (6,1) -> lungo y=1 -> M3 (24,1) -> BS2 (24,5)
-        // Lunghezza totale: 4 (salita) + 18 (orizzontale) + 4 (discesa) = 26 step
-        const PATH_UPPER = [
-            [6, 4], [6, 3], [6, 2], [6, 1], // Salita fino a M1 (6,1)
-            [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1], [14, 1],
-            [15, 1], // Centro Phase Shifter φ
-            [16, 1], [17, 1], [18, 1], [19, 1], [20, 1], [21, 1], [22, 1], [23, 1], [24, 1], // Fino a M3 (24,1)
-            [24, 2], [24, 3], [24, 4], [24, 5] // Discesa fino a BS2 (24,5)
-        ];
-
-        // Ramo Inferiore: da BS1 (6,5) -> M2 (6,6) -> lungo y=6 -> M4 (24,6) -> BS2 (24,5)
-        // Per sincronia perfetta dell'interferometro bilanciato (cammini di ugual lunghezza ottica),
-        // mappiamo lo stesso tempo normalizzato [0..1] su entrambi i rami paralleli!
-        const PATH_LOWER = [
-            [6, 6], // M2 (6,6)
-            [7, 6], [8, 6], [9, 6], [10, 6], [11, 6], [12, 6], [13, 6], [14, 6],
-            [15, 6], [16, 6], [17, 6], [18, 6], [19, 6], [20, 6], [21, 6], [22, 6], [23, 6], [24, 6], // Fino a M4 (24,6)
-            [24, 5] // Salita a BS2 (24,5)
-        ];
-
-        // Uscita verso D1 (Alto): da BS2 (24,5) -> (30,2)
-        const PATH_OUT_D1 = [
-            [25, 4], [26, 3], [27, 2], [28, 2], [29, 2], [30, 2]
-        ];
-
-        // Uscita verso D2 (Basso): da BS2 (24,5) -> (30,5)
-        const PATH_OUT_D2 = [
-            [25, 5], [26, 5], [27, 5], [28, 5], [29, 5], [30, 5]
-        ];
-
-        // Componenti ottici fissi sulla matrice
-        const OPTICS = {
-            source: [[0, 5]],
-            bs1: [[6, 5]],
-            bs2: [[24, 5]],
-            mirrors: [
-                [6, 1],  // M1 (Alto-Sinistra)
-                [6, 6],  // M2 (Basso-Sinistra)
-                [24, 1], // M3 (Alto-Destra)
-                [24, 6]  // M4 (Basso-Destra)
+        // Percorsi geometrici continui per l'onda e i singoli fotoni
+        const OPTIC_PATHS = {
+            input: [
+                { x: 118, y: 215 },
+                { x: 255, y: 215 }
             ],
-            phaseShifter: [
-                [14, 0], [15, 0], [16, 0] // Indicatori LED sopra il ramo superiore
+            upper: [
+                { x: 255, y: 215 },
+                { x: 255, y: 78 },
+                { x: 472, y: 78 },
+                { x: 690, y: 78 }
             ],
-            observerUpper: [
-                [11, 2], [12, 2] // Sonda di misura sul ramo superiore
+            lower: [
+                { x: 255, y: 215 },
+                { x: 690, y: 215 },
+                { x: 690, y: 78 }
             ],
-            observerLower: [
-                [11, 7], [12, 7] // Sonda di misura sul ramo inferiore
+            outD1: [
+                { x: 690, y: 78 },
+                { x: 872, y: 78 }
             ],
-            detector1: [
-                [30, 1], [31, 1],
-                [30, 2], [31, 2]
-            ],
-            detector2: [
-                [30, 5], [31, 5],
-                [30, 6], [31, 6]
+            outD2: [
+                { x: 690, y: 78 },
+                { x: 755, y: 78 },
+                { x: 810, y: 215 },
+                { x: 872, y: 215 }
             ]
         };
 
-        // Riferimenti al Canvas e buffer della matrice LED 8x32
+        // Riferimenti al Canvas del banco ottico
         const container = document.getElementById('canvasContainer');
         const canvas = document.getElementById('ledCanvas');
         const ctx = canvas.getContext('2d');
-        const ledBuffer = Array.from({ length: ROWS }, () =>
-            Array.from({ length: COLS }, () => ({ r: 13, g: 18, b: 28, glow: 0 }))
-        );
 
         // Calcola le probabilità teoriche di rilevazione su D1 e D2 in funzione dello sfasamento φ
-        // e dell'eventuale misura dei cammini (which-path observer / cancellazione quantistica)
         function getProbabilities() {
             const rad = (state.phaseDeg * Math.PI) / 180;
-            const cos2 = Math.pow(Math.cos(rad / 2), 2);
-            const sin2 = Math.pow(Math.sin(rad / 2), 2);
+            let p1 = Math.pow(Math.cos(rad / 2), 2);
+            let p2 = Math.pow(Math.sin(rad / 2), 2);
 
-            if (!state.observerActive) {
-                return { p1: cos2, p2: sin2, visibility: 1.0 };
+            // Se l'osservatore misura i cammini, l'interferenza viene distrutta (50% / 50%)
+            if (state.observerActive) {
+                p1 = 0.5;
+                p2 = 0.5;
             }
-
-            // Con misura del cammino attiva, l'interferenza scompare (50% / 50%) per i fotoni tracciati:
-            // se la sonda è su entrambi i rami, la visibilità è 0 (50/50); se è su un solo ramo,
-            // metà dei fotoni (quelli che passano dal ramo sondato) hanno cammino noto -> 50/50,
-            // mentre l'altra metà conserva interferenza residua (visibilità 0.5).
-            const visibility = state.observerBranch === 'both' ? 0.0 : 0.5;
-            const p1 = 0.5 * (1 - visibility) + cos2 * visibility;
-            const p2 = 0.5 * (1 - visibility) + sin2 * visibility;
-            return { p1, p2, visibility };
+            return { p1, p2 };
         }
 
-        // Genera un nuovo pacchetto d'onda o singolo fotone dalla sorgente laser
+        // Genera un nuovo pacchetto d'onda o singolo fotone
         function spawnPulse() {
             const { p1 } = getProbabilities();
+            const collapsedTarget = Math.random() < p1 ? 'd1' : 'd2';
             state.pulses.push({
                 progress: 0,
-                phaseAtShift: state.phaseDeg,
-                observerSnapshot: state.observerActive,
-                observerBranchSnapshot: state.observerBranch,
-                collapsedTarget: Math.random() < p1 ? 'd1' : 'd2',
-                measured: false
+                collapsedTarget,
+                counted: false
             });
+        }
+
+        // Registra una rilevazione nello storico della fase corrente
+        function recordDetection(target) {
+            const deg = Math.round(state.phaseDeg) % 361;
+            if (target === 'd1') {
+                state.counts.d1++;
+                state.phaseMeasurements[deg].d1++;
+                state.flashD1 = 1.0;
+            } else {
+                state.counts.d2++;
+                state.phaseMeasurements[deg].d2++;
+                state.flashD2 = 1.0;
+            }
+            state.phaseMeasurements[deg].total++;
+        }
+
+        // Resetta il conteggio parziale della finestra corrente (quando cambiano parametri chiave)
+        function resetCurrentRatioWindow() {
+            state.windowCounts = { d1: 0, d2: 0 };
         }
 
         // Stato globale della simulazione
         const state = {
             mode: 'wave',           // 'wave' | 'photon'
-            phaseDeg: 0,            // 0 .. 360 gradi
-            observerActive: false,  // Misura dei cammini attiva (distrugge interferenza)
+            phaseDeg: 0,            // 0..360 gradi
+            observerActive: false,  // Misura dei cammini attiva
             observerBranch: 'both', // 'both' | 'upper' | 'lower'
-            isPlaying: true,
-            speed: 1.0,
-            showLabels: true,
-            showTheoCurve: true,
-            pulses: [],             // Array di pacchetti d'onda / fotoni attivi
+            showTheoCurve: true,    // Mostra curve teoriche cos²(φ/2) e sin²(φ/2)
+            showLabels: true,       // Mostra etichette ottiche sul banco
+            isRunning: true,        // Play / Pausa
+            speed: 1.0,             // Moltiplicatore velocità (0.5x .. 100x)
+            pulses: [],             // Pacchetti d'onda / fotoni in volo
             spawnTimer: 0,
             counts: { d1: 0, d2: 0 },
+            // Finestra eventi per il rapporto dinamico in tempo reale sui punti della curva P(φ)
+            windowCounts: { d1: 0, d2: 0 },
             // Storico misure per fase (0..360): { d1, d2, total }
             phaseMeasurements: Array.from({ length: 361 }, () => ({ d1: 0, d2: 0, total: 0 })),
             flashD1: 0,             // Intensità flash rivelatore D1 (0..1)
-            flashD2: 0,             // Intensità flash rivelatore D2 (0..1)
-            hoveredLed: null
+            flashD2: 0              // Intensità flash rivelatore D2 (0..1)
         };
-        // Registra una misura effettiva dai rivelatori per una determinata fase
-        function recordDetectorMeasurement(phaseDeg, d1Hits, d2Hits) {
-            const clampedPhase = Math.max(0, Math.min(360, Math.round(phaseDeg)));
-            const entry = state.phaseMeasurements[clampedPhase];
-            entry.d1 += d1Hits;
-            entry.d2 += d2Hits;
-            entry.total += d1Hits + d2Hits;
+
+        // Campiona un punto lungo una spezzata (polyline) per t in [0..1]
+        function samplePolyline(points, t) {
+            const clamped = Math.max(0, Math.min(1, t));
+            if (points.length === 1) return { x: points[0].x, y: points[0].y };
+
+            const segLengths = [];
+            let totalLen = 0;
+            for (let i = 0; i < points.length - 1; i++) {
+                const dx = points[i + 1].x - points[i].x;
+                const dy = points[i + 1].y - points[i].y;
+                const len = Math.hypot(dx, dy);
+                segLengths.push(len);
+                totalLen += len;
+            }
+            if (totalLen === 0) return { x: points[0].x, y: points[0].y };
+
+            let targetDist = clamped * totalLen;
+            for (let i = 0; i < segLengths.length; i++) {
+                const segLen = segLengths[i];
+                if (targetDist <= segLen || i === segLengths.length - 1) {
+                    const ratio = segLen > 0 ? targetDist / segLen : 0;
+                    return {
+                        x: points[i].x + (points[i + 1].x - points[i].x) * ratio,
+                        y: points[i].y + (points[i + 1].y - points[i].y) * ratio
+                    };
+                }
+                targetDist -= segLen;
+            }
+            return { x: points[points.length - 1].x, y: points[points.length - 1].y };
         }
 
-        // Restituisce il tasso misurato (0..1) per una data fase, o null se non ci sono misure
-        function getMeasuredRateAtPhase(deg) {
-            const clamped = Math.max(0, Math.min(360, Math.round(deg)));
-            const entry = state.phaseMeasurements[clamped];
-            if (!entry || entry.total <= 0) return null;
-            return {
-                m1: entry.d1 / entry.total,
-                m2: entry.d2 / entry.total,
-                total: entry.total
-            };
-        }
-
-        // Calcola la percentuale misurata interpolata/pesata intorno alla fase corrente
-        function getMeasuredSummaryAtCurrentPhase() {
-            const direct = getMeasuredRateAtPhase(state.phaseDeg);
-            if (direct) return { ...direct, exact: true };
-
-            // Cerca la misura più vicina entro ±8° per mostrare un valore indicativo quando la fase esatta non ha ancora campioni
-            let best = null;
-            let bestDist = Infinity;
-            for (let offset = 1; offset <= 8; offset++) {
-                for (const candidateDeg of [state.phaseDeg - offset, state.phaseDeg + offset]) {
-                    if (candidateDeg < 0 || candidateDeg > 360) continue;
-                    const rate = getMeasuredRateAtPhase(candidateDeg);
-                    if (rate && offset < bestDist) {
-                        bestDist = offset;
-                        best = { ...rate, exact: false, nearDeg: candidateDeg };
-                    }
-                }
-            }
-            return best;
-        }
-
-        // Aggiorna la logica fisica e i LED ad ogni frame
-        function updateSimulation(dt) {
-            // Decadimento morbido dei flash dei rivelatori
-            state.flashD1 = Math.max(0, state.flashD1 - dt * 2.2);
-            state.flashD2 = Math.max(0, state.flashD2 - dt * 2.2);
-
-            if (!state.isPlaying) return;
-
-            // Spawn automatico continuo
-            state.spawnTimer += dt * state.speed;
-            const spawnInterval = state.mode === 'wave' ? 1.55 : 2.1;
-            if (state.spawnTimer >= spawnInterval) {
-                state.spawnTimer = 0;
-                spawnPulse();
-            }
-
-            // Avanzamento dei pacchetti
-            const velocity = 0.85 * state.speed;
-            for (let i = state.pulses.length - 1; i >= 0; i--) {
-                const p = state.pulses[i];
-                p.progress += dt * velocity;
-
-                // Aggiorna dinamicamente lo sfasamento mentre il pacchetto attraversa la zona centrale
-                if (p.progress < 1.6) {
-                    p.phaseAtShift = state.phaseDeg;
-                    const { p1 } = getProbabilities();
-                    p.collapsedTarget = Math.random() < p1 ? 'd1' : 'd2';
-                }
-
-                // Momento della rivelazione (progress >= 2.85)
-                if (!p.measured && p.progress >= 2.85) {
-                    p.measured = true;
-                    const { p1, p2 } = getProbabilities();
-                    const measurePhase = Math.round(p.phaseAtShift);
-
-                    if (state.mode === 'photon') {
-                        if (p.collapsedTarget === 'd1') {
-                            state.counts.d1++;
-                            state.flashD1 = 1.0;
-                            recordDetectorMeasurement(measurePhase, 1, 0);
-                        } else {
-                            state.counts.d2++;
-                            state.flashD2 = 1.0;
-                            recordDetectorMeasurement(measurePhase, 0, 1);
-                        }
-                    } else {
-                        // In modalità onda, registra il contributo frazionario misurato sui due rivelatori
-                        state.flashD1 = Math.max(state.flashD1, p1);
-                        state.flashD2 = Math.max(state.flashD2, p2);
-                        recordDetectorMeasurement(measurePhase, p1, p2);
-                        if (p1 > 0.5) state.counts.d1++;
-                        if (p2 > 0.5) state.counts.d2++;
-                    }
-                    updateTelemetryUI();
-                }
-
-                // Rimuovi pacchetti completati
-                if (p.progress >= 3.15) {
-                    state.pulses.splice(i, 1);
-                }
-            }
-        }
-
-        // Helper per impostare il colore di un LED nel buffer (additive blending)
-        function setLed(x, y, r, g, b, glow = 0.5, additive = false) {
-            if (x < 0 || x >= COLS || y < 0 || y >= ROWS) return;
-            const cell = ledBuffer[y][x];
-            if (additive) {
-                cell.r = Math.min(255, cell.r + r);
-                cell.g = Math.min(255, cell.g + g);
-                cell.b = Math.min(255, cell.b + b);
-                cell.glow = Math.min(1, Math.max(cell.glow, glow));
-            } else {
-                cell.r = r;
-                cell.g = g;
-                cell.b = b;
-                cell.glow = glow;
-            }
-        }
-
-        // Disegna un pacchetto gaussiano lungo un array di coordinate
-        function renderWavePacketOnPath(pathArray, normalizedPos, intensity, colorRGB) {
-            if (intensity <= 0.02) return;
-            const exactIdx = normalizedPos * (pathArray.length - 1);
-            const sigma = 1.15; // Larghezza del pacchetto d'onda
-
-            for (let idx = 0; idx < pathArray.length; idx++) {
-                const dist = Math.abs(idx - exactIdx);
-                if (dist <= 3.0) {
-                    const envelope = Math.exp(-(dist * dist) / (2 * sigma * sigma));
-                    const alpha = envelope * intensity;
-                    if (alpha > 0.03) {
-                        const [px, py] = pathArray[idx];
-                        setLed(
-                            px, py,
-                            Math.round(colorRGB.r * alpha),
-                            Math.round(colorRGB.g * alpha),
-                            Math.round(colorRGB.b * alpha),
-                            alpha,
-                            true
-                        );
-                    }
-                }
-            }
-        }
-
-        // Costruisce il frame LED 8x32 completo
-        function computeLedFrame() {
-            // 1. Reset sfondo matriz LED (LED spenti ma visibili come capsule grigio-scuro)
-            for (let y = 0; y < ROWS; y++) {
-                for (let x = 0; x < COLS; x++) {
-                    ledBuffer[y][x] = { r: 13, g: 18, b: 28, glow: 0 };
-                }
-            }
-
-            // 2. Guide ottiche deboli (traccia dei percorsi paralleli per chiarezza visiva)
-            const traceColor = { r: 16, g: 26, b: 42 };
-            [...PATH_INPUT, ...PATH_UPPER, ...PATH_LOWER, ...PATH_OUT_D1, ...PATH_OUT_D2].forEach(([x, y]) => {
-                setLed(x, y, traceColor.r, traceColor.g, traceColor.b, 0);
+        // Disegna un fascio continuo con oscillazione d'onda sinusoidale e sfasamento opzionale
+        function drawWaveBeam(points, amplitude, colorRgb, alpha, phaseOffset = 0, time = 0) {
+            if (alpha <= 0.01 || points.length < 2) return;
+            ctx.save();
+            ctx.strokeStyle = `rgba(${colorRgb}, ${alpha.toFixed(3)})`;
+            ctx.lineWidth = 3.2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            points.forEach((pt, idx) => {
+                if (idx === 0) ctx.moveTo(pt.x, pt.y);
+                else ctx.lineTo(pt.x, pt.y);
             });
+            ctx.stroke();
 
-            // 3. Componenti Ottici Passivi
-            // Sorgente Laser (Rosso rubino)
-            OPTICS.source.forEach(([x, y]) => setLed(x, y, 244, 63, 94, 0.85));
-
-            // Specchi M1, M2, M3, M4 (Bianco-argento freddo)
-            OPTICS.mirrors.forEach(([x, y]) => setLed(x, y, 160, 185, 215, 0.45));
-
-            // Beam Splitters BS1 & BS2 (Azzurro semitrasparente)
-            OPTICS.bs1.forEach(([x, y]) => setLed(x, y, 56, 189, 248, 0.75));
-            OPTICS.bs2.forEach(([x, y]) => setLed(x, y, 56, 189, 248, 0.75));
-
-            // Phase Shifter φ (Ambra/Oro - luminosità modulata dall'angolo φ)
-            const phaseNorm = state.phaseDeg / 360;
-            const psBrightness = 0.35 + 0.65 * Math.sin(phaseNorm * Math.PI);
-            OPTICS.phaseShifter.forEach(([x, y]) => {
-                setLed(x, y, Math.round(251 * psBrightness), Math.round(180 * psBrightness), 24, psBrightness * 0.8);
-            });
-
-            // Sonda Osservatore Cammino (Which-Path Detector in rosso corallo quando attiva)
-            if (state.observerActive) {
-                const pulseGlow = 0.65 + 0.35 * Math.sin(performance.now() * 0.008);
-                const probeCells = [];
-                if (state.observerBranch === 'both' || state.observerBranch === 'upper') {
-                    probeCells.push(...OPTICS.observerUpper);
+            if (amplitude > 0.4) {
+                ctx.strokeStyle = `rgba(${colorRgb}, ${Math.min(1, alpha * 1.15).toFixed(3)})`;
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                const steps = 48;
+                for (let s = 0; s <= steps; s++) {
+                    const t = s / steps;
+                    const p = samplePolyline(points, t);
+                    const nextP = samplePolyline(points, Math.min(1, t + 0.01));
+                    const dx = nextP.x - p.x;
+                    const dy = nextP.y - p.y;
+                    const len = Math.hypot(dx, dy) || 1;
+                    const nx = -dy / len;
+                    const ny = dx / len;
+                    const wave = Math.sin(t * 26 - time * 8 + phaseOffset) * amplitude;
+                    const wx = p.x + nx * wave;
+                    const wy = p.y + ny * wave;
+                    if (s === 0) ctx.moveTo(wx, wy);
+                    else ctx.lineTo(wx, wy);
                 }
-                if (state.observerBranch === 'both' || state.observerBranch === 'lower') {
-                    probeCells.push(...OPTICS.observerLower);
-                }
-                probeCells.forEach(([x, y]) => {
-                    setLed(x, y, 251, 113, 133, pulseGlow);
-                });
+                ctx.stroke();
             }
+            ctx.restore();
+        }
 
-            // 4. Propagazione Pacchetti d'Onda / Fotoni
+        // Disegna un pacchetto fotonico localizzato lungo un percorso
+        function drawPulsePacket(points, t, colorRgb, radius = 6) {
+            if (t < 0 || t > 1) return;
+            const pos = samplePolyline(points, t);
+            ctx.save();
+            const grad = ctx.createRadialGradient(pos.x, pos.y, 1, pos.x, pos.y, radius * 2.4);
+            grad.addColorStop(0, `rgba(${colorRgb}, 0.95)`);
+            grad.addColorStop(0.5, `rgba(${colorRgb}, 0.35)`);
+            grad.addColorStop(1, `rgba(${colorRgb}, 0)`);
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, radius * 2.4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, radius * 0.48, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // Aggiorna la simulazione fisica e i pacchetti/onde
+        function updateSimulation(dt, nowSec) {
+            if (!state.isRunning) return;
+
+            state.flashD1 = Math.max(0, state.flashD1 - dt * 3.2);
+            state.flashD2 = Math.max(0, state.flashD2 - dt * 3.2);
+
             const { p1, p2 } = getProbabilities();
 
-            state.pulses.forEach(pulse => {
-                const t = pulse.progress;
+            if (state.mode === 'photon') {
+                const spawnInterval = Math.max(0.03, 0.75 / Math.sqrt(Math.max(0.5, state.speed)));
+                state.spawnTimer += dt;
+                if (state.spawnTimer >= spawnInterval) {
+                    state.spawnTimer = 0;
+                    spawnPulse();
+                }
 
-                if (t < 1.0) {
-                    // Fase 1: Dalla sorgente al Beam Splitter 1 (BS1)
-                    renderWavePacketOnPath(PATH_INPUT, t, 1.0, { r: 255, g: 90, b: 120 });
-                } else if (t < 2.0) {
-                    // Fase 2: Sovrapposizione nei due rami paralleli (Superiore e Inferiore)
-                    const branchT = t - 1.0;
+                const stepSpeed = dt * 0.85 * Math.min(state.speed, 25);
+                for (let i = state.pulses.length - 1; i >= 0; i--) {
+                    const p = state.pulses[i];
+                    p.progress += stepSpeed;
 
-                    // Ramo Inferiore (non sfasato - ciano brillante)
-                    renderWavePacketOnPath(PATH_LOWER, branchT, 0.72, { r: 34, g: 211, b: 238 });
+                    if (p.progress >= 3.0 && !p.counted) {
+                        p.counted = true;
+                        recordDetection(p.collapsedTarget);
+                        if (p.collapsedTarget === 'd1') state.windowCounts.d1++;
+                        else state.windowCounts.d2++;
+                        updateTelemetryUI();
+                    }
 
-                    // Ramo Superiore (attraversa lo sfasatore φ attorno a branchT = 0.5)
-                    const passedShifter = branchT > 0.48;
-                    const upperColor = passedShifter && state.phaseDeg > 10
-                        ? { r: 251, g: 191, b: 36 }  // Tinta ambrata dopo lo sfasamento φ
-                        : { r: 34, g: 211, b: 238 }; // Ciano prima dello sfasatore
-
-                    renderWavePacketOnPath(PATH_UPPER, branchT, 0.72, upperColor);
-                } else {
-                    // Fase 3: Dopo BS2 - Interferenza quantistica verso D1 e D2
-                    const outT = Math.min(1.0, t - 2.0);
-
-                    if (state.mode === 'wave') {
-                        // Modalità Onda: entrambi i rami di uscita mostrano l'ampiezza di probabilità
-                        renderWavePacketOnPath(PATH_OUT_D1, outT, p1, { r: 52, g: 211, b: 153 }); // Verde smeraldo D1
-                        renderWavePacketOnPath(PATH_OUT_D2, outT, p2, { r: 167, g: 139, b: 250 }); // Viola D2
-                    } else {
-                        // Modalità Fotone Singolo: collasso su uno dei due rivelatori
-                        if (pulse.collapsedTarget === 'd1') {
-                            renderWavePacketOnPath(PATH_OUT_D1, outT, 1.0, { r: 52, g: 211, b: 153 });
-                        } else {
-                            renderWavePacketOnPath(PATH_OUT_D2, outT, 1.0, { r: 167, g: 139, b: 250 });
-                        }
+                    if (p.progress > 3.35) {
+                        state.pulses.splice(i, 1);
                     }
                 }
-            });
-
-            // 5. Rivelatori D1 e D2 (Blocco 2x2 LED ciascuno)
-            const d1Base = 45 + Math.round(state.flashD1 * 210);
-            OPTICS.detector1.forEach(([x, y]) => {
-                setLed(x, y, Math.round(state.flashD1 * 40), d1Base, Math.round(90 + state.flashD1 * 110), 0.3 + state.flashD1 * 0.7);
-            });
-
-            const d2Base = 45 + Math.round(state.flashD2 * 210);
-            OPTICS.detector2.forEach(([x, y]) => {
-                setLed(x, y, Math.round(90 + state.flashD2 * 110), Math.round(state.flashD2 * 60), d2Base, 0.3 + state.flashD2 * 0.7);
-            });
+            } else {
+                // In modalità onda, campiona periodicamente eventi proporzionali a P(D1) e P(D2)
+                const sampleInterval = Math.max(0.02, 0.35 / Math.sqrt(Math.max(0.5, state.speed)));
+                state.spawnTimer += dt;
+                if (state.spawnTimer >= sampleInterval) {
+                    state.spawnTimer = 0;
+                    const burstCount = state.speed >= 20 ? Math.min(12, Math.floor(state.speed / 8)) : 1;
+                    for (let b = 0; b < burstCount; b++) {
+                        const waveTarget = Math.random() < p1 ? 'd1' : 'd2';
+                        recordDetection(waveTarget);
+                        if (waveTarget === 'd1') state.windowCounts.d1++;
+                        else state.windowCounts.d2++;
+                    }
+                    state.flashD1 = Math.max(state.flashD1, p1 * 0.75);
+                    state.flashD2 = Math.max(state.flashD2, p2 * 0.75);
+                    updateTelemetryUI();
+                }
+            }
         }
 
-        // Rendering ad alta definizione sul Canvas HTML5
-        function drawCanvas() {
+        // Disegna l'intero banco ottico e i componenti MZI
+        function drawCanvas(nowSec = 0) {
             const dpr = window.devicePixelRatio || 1;
-            const rect = container.getBoundingClientRect();
-            const width = rect.width - 16; // Sottrae padding interno
-            if (width <= 0) return;
+            const rect = canvas.getBoundingClientRect();
+            const cssW = Math.max(320, rect.width || container.clientWidth || 800);
+            const cssH = Math.max(210, Math.round(cssW * (BENCH.height / BENCH.width)));
 
-            // Proporzione 32:8 = 4:1 (leggermente aumentata in altezza per etichette ottiche)
-            const labelMarginTop = state.showLabels ? 20 : 6;
-            const labelMarginBottom = state.showLabels ? 20 : 6;
-            const cellSize = width / COLS;
-            const height = cellSize * ROWS + labelMarginTop + labelMarginBottom;
-
-            if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
-                canvas.width = Math.round(width * dpr);
-                canvas.height = Math.round(height * dpr);
-                canvas.style.height = `${height}px`;
+            if (canvas.width !== Math.round(cssW * dpr) || canvas.height !== Math.round(cssH * dpr)) {
+                canvas.width = Math.round(cssW * dpr);
+                canvas.height = Math.round(cssH * dpr);
             }
 
             ctx.save();
             ctx.scale(dpr, dpr);
-            ctx.clearRect(0, 0, width, height);
+            const sx = cssW / BENCH.width;
+            const sy = cssH / BENCH.height;
+            ctx.scale(sx, sy);
 
-            // Disegno griglia sottile PCB
-            ctx.strokeStyle = 'rgba(30, 41, 59, 0.35)';
-            ctx.lineWidth = 0.5;
-            for (let x = 0; x <= COLS; x++) {
-                ctx.beginPath();
-                ctx.moveTo(x * cellSize, labelMarginTop);
-                ctx.lineTo(x * cellSize, labelMarginTop + ROWS * cellSize);
-                ctx.stroke();
-            }
-            for (let y = 0; y <= ROWS; y++) {
-                ctx.beginPath();
-                ctx.moveTo(0, labelMarginTop + y * cellSize);
-                ctx.lineTo(width, labelMarginTop + y * cellSize);
-                ctx.stroke();
-            }
+            ctx.clearRect(0, 0, BENCH.width, BENCH.height);
 
-            // Disegno dei 256 LED WS2812B
-            const ledRadius = cellSize * 0.36;
-
-            for (let y = 0; y < ROWS; y++) {
-                for (let x = 0; x < COLS; x++) {
-                    const led = ledBuffer[y][x];
-                    const cx = (x + 0.5) * cellSize;
-                    const cy = labelMarginTop + (y + 0.5) * cellSize;
-
-                    // Alone luminoso (Glow) se il LED è acceso
-                    if (led.glow > 0.05) {
-                        const grad = ctx.createRadialGradient(cx, cy, ledRadius * 0.2, cx, cy, ledRadius * 2.3);
-                        grad.addColorStop(0, `rgba(${led.r}, ${led.g}, ${led.b}, ${led.glow * 0.75})`);
-                        grad.addColorStop(1, `rgba(${led.r}, ${led.g}, ${led.b}, 0)`);
-                        ctx.fillStyle = grad;
-                        ctx.beginPath();
-                        ctx.arc(cx, cy, ledRadius * 2.3, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-
-                    // Involucro SMD 5050 arrotondato
-                    const boxSize = cellSize * 0.76;
-                    ctx.fillStyle = '#0c111b';
-                    ctx.strokeStyle = 'rgba(51, 65, 85, 0.45)';
-                    ctx.lineWidth = 0.8;
+            // Griglia fori filettati M6 del banco ottico
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.08)';
+            for (let gx = 40; gx < BENCH.width; gx += 40) {
+                for (let gy = 30; gy < BENCH.height; gy += 35) {
                     ctx.beginPath();
-                    ctx.roundRect(cx - boxSize / 2, cy - boxSize / 2, boxSize, boxSize, cellSize * 0.16);
+                    ctx.arc(gx, gy, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Tracciati guida tenui
+            const guidePaths = [OPTIC_PATHS.input, OPTIC_PATHS.upper, OPTIC_PATHS.lower, OPTIC_PATHS.outD1, OPTIC_PATHS.outD2];
+            ctx.save();
+            ctx.strokeStyle = 'rgba(71, 85, 105, 0.28)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([4, 4]);
+            guidePaths.forEach(pts => {
+                ctx.beginPath();
+                pts.forEach((pt, idx) => {
+                    if (idx === 0) ctx.moveTo(pt.x, pt.y);
+                    else ctx.lineTo(pt.x, pt.y);
+                });
+                ctx.stroke();
+            });
+            ctx.restore();
+
+            const { p1, p2 } = getProbabilities();
+            const phaseRad = (state.phaseDeg * Math.PI) / 180;
+
+            if (state.mode === 'wave') {
+                const amp = state.observerActive ? 1.4 : 4.2;
+                drawWaveBeam(OPTIC_PATHS.input, amp, '34, 211, 238', 0.85, 0, nowSec);
+                drawWaveBeam(OPTIC_PATHS.upper, amp, '56, 189, 248', 0.68, phaseRad, nowSec);
+                drawWaveBeam(OPTIC_PATHS.lower, amp, '34, 211, 238', 0.68, 0, nowSec);
+                drawWaveBeam(OPTIC_PATHS.outD1, amp * Math.sqrt(Math.max(0.05, p1)), '52, 211, 153', 0.2 + p1 * 0.75, 0, nowSec);
+                drawWaveBeam(OPTIC_PATHS.outD2, amp * Math.sqrt(Math.max(0.05, p2)), '167, 139, 250', 0.2 + p2 * 0.75, phaseRad, nowSec);
+            } else {
+                // Modalità fotone singolo: mostra fascio di ingresso tenue e pacchetti in volo
+                drawWaveBeam(OPTIC_PATHS.input, 0, '34, 211, 238', 0.22, 0, nowSec);
+                state.pulses.forEach(p => {
+                    if (p.progress <= 1) {
+                        drawPulsePacket(OPTIC_PATHS.input, p.progress, '34, 211, 238', 6.5);
+                    } else if (p.progress <= 2) {
+                        const localT = p.progress - 1;
+                        if (!state.observerActive) {
+                            drawPulsePacket(OPTIC_PATHS.upper, localT, '56, 189, 248', 5.5);
+                            drawPulsePacket(OPTIC_PATHS.lower, localT, '34, 211, 238', 5.5);
+                        } else {
+                            const branchPath = p.collapsedTarget === 'd1' ? OPTIC_PATHS.upper : OPTIC_PATHS.lower;
+                            drawPulsePacket(branchPath, localT, '251, 113, 133', 6);
+                        }
+                    } else {
+                        const localT = Math.min(1, p.progress - 2);
+                        const outPath = p.collapsedTarget === 'd1' ? OPTIC_PATHS.outD1 : OPTIC_PATHS.outD2;
+                        const outRgb = p.collapsedTarget === 'd1' ? '52, 211, 153' : '167, 139, 250';
+                        drawPulsePacket(outPath, localT, outRgb, 6.5);
+                    }
+                });
+            }
+
+            // Sorgente Laser
+            ctx.save();
+            ctx.fillStyle = '#0f172a';
+            ctx.strokeStyle = '#22d3ee';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(BENCH.laser.x - 36, BENCH.laser.y - 18, 72, 36, 6);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#22d3ee';
+            ctx.beginPath();
+            ctx.arc(BENCH.laser.x + 36, BENCH.laser.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Beam Splitter cubici BS1 e BS2
+            [BENCH.bs1, BENCH.bs2].forEach(bs => {
+                ctx.save();
+                ctx.translate(bs.x, bs.y);
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.16)';
+                ctx.strokeStyle = '#7dd3fc';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.roundRect(-16, -16, 32, 32, 4);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.strokeStyle = 'rgba(224, 242, 254, 0.75)';
+                ctx.lineWidth = 1.4;
+                ctx.beginPath();
+                ctx.moveTo(-14, 14);
+                ctx.lineTo(14, -14);
+                ctx.stroke();
+                ctx.restore();
+            });
+
+            // Specchi M1, M2 e specchio di deviazione verso D2
+            const drawMirror = (x, y, angleDeg) => {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate((angleDeg * Math.PI) / 180);
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillRect(-16, -3, 32, 6);
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 1.2;
+                ctx.strokeRect(-16, -3, 32, 6);
+                ctx.restore();
+            };
+            drawMirror(BENCH.m1.x, BENCH.m1.y, 45);
+            drawMirror(BENCH.m2.x, BENCH.m2.y, -45);
+            drawMirror(755, 78, 45);
+            drawMirror(810, 215, 45);
+
+            // Sfasatore ottico φ sul ramo superiore
+            ctx.save();
+            ctx.translate(BENCH.shifter.x, BENCH.shifter.y);
+            ctx.fillStyle = 'rgba(251, 191, 36, 0.16)';
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.roundRect(-14, -18, 28, 36, 5);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+
+            // Sonda osservatore se attiva
+            if (state.observerActive) {
+                const probeSpots = [];
+                if (state.observerBranch === 'both' || state.observerBranch === 'upper') {
+                    probeSpots.push({ x: 365, y: 78 });
+                }
+                if (state.observerBranch === 'both' || state.observerBranch === 'lower') {
+                    probeSpots.push({ x: 472, y: 215 });
+                }
+                probeSpots.forEach(sp => {
+                    ctx.save();
+                    ctx.strokeStyle = '#fb7185';
+                    ctx.fillStyle = 'rgba(251, 113, 133, 0.2)';
+                    ctx.lineWidth = 1.8;
+                    ctx.beginPath();
+                    ctx.arc(sp.x, sp.y, 11, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.stroke();
+                    ctx.restore();
+                });
+            }
 
-                    // Lente centrale del LED
-                    ctx.fillStyle = `rgb(${led.r}, ${led.g}, ${led.b})`;
+            // Rivelatori D1 e D2
+            const drawDetector = (x, y, label, rgb, flash) => {
+                ctx.save();
+                ctx.translate(x, y);
+                if (flash > 0.02) {
+                    const g = ctx.createRadialGradient(0, 0, 4, 0, 0, 34);
+                    g.addColorStop(0, `rgba(${rgb}, ${(flash * 0.85).toFixed(2)})`);
+                    g.addColorStop(1, `rgba(${rgb}, 0)`);
+                    ctx.fillStyle = g;
                     ctx.beginPath();
-                    ctx.arc(cx, cy, ledRadius, 0, Math.PI * 2);
+                    ctx.arc(0, 0, 34, 0, Math.PI * 2);
                     ctx.fill();
-
-                    // Punto luce speculare interno per effetto lente reale
-                    if (led.glow > 0.15) {
-                        ctx.fillStyle = `rgba(255, 255, 255, ${led.glow * 0.65})`;
-                        ctx.beginPath();
-                        ctx.arc(cx - ledRadius * 0.25, cy - ledRadius * 0.25, ledRadius * 0.32, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
                 }
-            }
-
-            // Indicatori diagonali su BS1, BS2 e Specchi (M1..M4)
-            ctx.lineWidth = Math.max(1.5, cellSize * 0.08);
-            ctx.lineCap = 'round';
-
-            // BS1 (6,5) e BS2 (24,5) - Linea diagonale a 45°
-            [[6, 5], [24, 5]].forEach(([bx, by]) => {
-                const cx = (bx + 0.5) * cellSize;
-                const cy = labelMarginTop + (by + 0.5) * cellSize;
-                const r = cellSize * 0.28;
-                ctx.strokeStyle = 'rgba(125, 211, 252, 0.75)';
+                ctx.fillStyle = '#0f172a';
+                ctx.strokeStyle = `rgb(${rgb})`;
+                ctx.lineWidth = 2.2;
                 ctx.beginPath();
-                ctx.moveTo(cx - r, cy + r);
-                ctx.lineTo(cx + r, cy - r);
+                ctx.roundRect(-22, -20, 44, 40, 7);
+                ctx.fill();
                 ctx.stroke();
-            });
 
-            // Specchi M1..M4 - Piccole barre orientate
-            OPTICS.mirrors.forEach(([mx, my]) => {
-                const cx = (mx + 0.5) * cellSize;
-                const cy = labelMarginTop + (my + 0.5) * cellSize;
-                const r = cellSize * 0.24;
-                ctx.strokeStyle = 'rgba(226, 232, 240, 0.65)';
-                ctx.beginPath();
-                ctx.moveTo(cx - r, cy - r * 0.4);
-                ctx.lineTo(cx + r, cy + r * 0.4);
-                ctx.stroke();
-            });
-
-            // Etichette ottiche sul canvas se attive
-            if (state.showLabels) {
-                ctx.font = `600 ${Math.max(8, Math.min(10, cellSize * 0.34))}px "JetBrains Mono", monospace`;
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 12px "JetBrains Mono", monospace';
                 ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(label, 0, 1);
+                ctx.restore();
+            };
+            drawDetector(BENCH.d1.x, BENCH.d1.y, 'D1', '52, 211, 153', state.flashD1);
+            drawDetector(BENCH.d2.x, BENCH.d2.y, 'D2', '167, 139, 250', state.flashD2);
 
-                const drawTag = (gx, gy, text, color, above = true) => {
-                    const tx = (gx + 0.5) * cellSize;
-                    const ty = above
-                        ? labelMarginTop + gy * cellSize - 4
-                        : labelMarginTop + (gy + 1) * cellSize + 11;
-                    ctx.fillStyle = color;
-                    ctx.fillText(text, tx, ty);
-                };
-
-                drawTag(0, 5, 'LASER', '#fb7185', false);
-                drawTag(6, 5, 'BS1', '#38bdf8', false);
-                drawTag(6, 1, 'M1', '#cbd5e1', true);
-                drawTag(6, 6, 'M2', '#cbd5e1', false);
-                drawTag(15, 0, 'PHASE φ', '#fbbf24', true);
-                if (state.observerActive) {
-                    if (state.observerBranch === 'both' || state.observerBranch === 'upper') {
-                        drawTag(11.5, 2, 'SONDA', '#fb7185', false);
-                    }
-                    if (state.observerBranch === 'both' || state.observerBranch === 'lower') {
-                        drawTag(11.5, 7, 'SONDA', '#fb7185', false);
-                    }
-                }
-                drawTag(24, 1, 'M3', '#cbd5e1', true);
-                drawTag(24, 6, 'M4', '#cbd5e1', false);
-                drawTag(24, 5, 'BS2', '#38bdf8', false);
-                drawTag(30.5, 1, 'D1', '#34d399', true);
-                drawTag(30.5, 6, 'D2', '#a78bfa', false);
-            }
-
-            // Evidenziazione cella LED sotto il cursore
-            if (state.hoveredLed) {
-                const { x, y } = state.hoveredLed;
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-                ctx.lineWidth = 1.4;
-                ctx.strokeRect(
-                    x * cellSize + 1,
-                    labelMarginTop + y * cellSize + 1,
-                    cellSize - 2,
-                    cellSize - 2
-                );
+            // Etichette ottiche opzionali
+            if (state.showLabels) {
+                ctx.save();
+                ctx.font = '600 10px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillText('LASER', BENCH.laser.x, BENCH.laser.y + 30);
+                ctx.fillText('BS1', BENCH.bs1.x, BENCH.bs1.y + 30);
+                ctx.fillText('M1', BENCH.m1.x, BENCH.m1.y - 22);
+                ctx.fillStyle = '#fbbf24';
+                ctx.fillText(`φ = ${state.phaseDeg}°`, BENCH.shifter.x, BENCH.shifter.y - 25);
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillText('BS2', BENCH.bs2.x, BENCH.bs2.y - 24);
+                ctx.fillText('M2', BENCH.m2.x, BENCH.m2.y + 30);
+                ctx.restore();
             }
 
             ctx.restore();
         }
 
-        // Aggiorna i pannelli numerici, le barre di probabilità e la grafica riassuntiva
+        // Aggiorna tutta la telemetria, le barre e il grafico SVG P(φ)
         function updateTelemetryUI() {
-            const { p1, p2, visibility } = getProbabilities();
-            const pct1 = (p1 * 100).toFixed(1);
-            const pct2 = (p2 * 100).toFixed(1);
-            const measuredCurrent = getMeasuredSummaryAtCurrentPhase();
-            const measuredTotalSamples = state.phaseMeasurements.reduce((acc, item) => acc + item.total, 0);
-
-            // Aggiorna stato visivo dell'osservatore / cancellazione quantistica
-            const observerBox = document.getElementById('observerBox');
-            const observerDot = document.getElementById('observerDot');
-            const observerBadge = document.getElementById('observerStateBadge');
-            const observerDesc = document.getElementById('observerDescription');
-            const btnToggleObs = document.getElementById('labelToggleObserver');
-
-            if (observerBox && observerDot && observerBadge && observerDesc && btnToggleObs) {
-                if (state.observerActive) {
-                    observerBox.classList.remove('border-slate-800/90');
-                    observerBox.classList.add('border-rose-500/40');
-                    observerDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-400 shadow-[0_0_8px_#fb7185] animate-pulse';
-                    observerBadge.textContent = visibility === 0 ? 'INTERFERENZA DISTRUTTA (50/50)' : 'VISIBILITÀ RIDOTTA (V=0.5)';
-                    observerBadge.className = 'text-[11px] font-mono text-rose-300 bg-rose-950/70 px-2 py-0.5 rounded border border-rose-800/60';
-                    btnToggleObs.textContent = 'Disattiva Misura Cammino';
-                    observerDesc.innerHTML = 'La sonda rileva quale cammino ha seguito il fotone: l’informazione "which-path" elimina l’interferenza dipendente da <span class="font-mono text-amber-300">φ</span>. Usa <span class="font-mono text-cyan-300">Cancella Cammino</span> per ripristinare la cancellazione quantistica.';
-                } else {
-                    observerBox.classList.remove('border-rose-500/40');
-                    observerBox.classList.add('border-slate-800/90');
-                    observerDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]';
-                    observerBadge.textContent = 'COERENZA ATTIVA';
-                    observerBadge.className = 'text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50';
-                    btnToggleObs.textContent = 'Attiva Misura Cammino';
-                    observerDesc.innerHTML = 'Nessuna informazione di cammino registrata (o informazione cancellata): i due cammini restano indistinguibili e producono interferenza dipendente da <span class="font-mono text-amber-300">φ</span>.';
-                }
-            }
-
-            document.getElementById('probD1Text').textContent = `${pct1}%`;
-            document.getElementById('probD2Text').textContent = `${pct2}%`;
-
-            document.getElementById('barD1').style.width = `${pct1}%`;
-            document.getElementById('barD2').style.width = `${pct2}%`;
-
+            const { p1, p2 } = getProbabilities();
             const total = state.counts.d1 + state.counts.d2;
-            const hasDetections = total > 0;
-            const empPct1 = hasDetections ? ((state.counts.d1 / total) * 100).toFixed(1) : null;
-            const empPct2 = hasDetections ? ((state.counts.d2 / total) * 100).toFixed(1) : null;
 
-            const freq1 = total > 0 ? ((state.counts.d1 / total) * 100).toFixed(0) : 0;
-            const freq2 = total > 0 ? ((state.counts.d2 / total) * 100).toFixed(0) : 0;
-
-            document.getElementById('countD1').textContent = state.counts.d1;
-            document.getElementById('freqD1').textContent = `(${freq1}%)`;
-
-            document.getElementById('countD2').textContent = state.counts.d2;
-            document.getElementById('freqD2').textContent = `(${freq2}%)`;
-
-            // Aggiorna grafica riassuntiva comparativa D1 vs D2
-            const displayPct1 = hasDetections && state.mode === 'photon' ? empPct1 : pct1;
-            const displayPct2 = hasDetections && state.mode === 'photon' ? empPct2 : pct2;
-
-            document.getElementById('summaryRatioD1').textContent = `${displayPct1}% D1`;
-            document.getElementById('summaryRatioD2').textContent = `${displayPct2}% D2`;
+            document.getElementById('phaseDegDisplay').textContent = `${state.phaseDeg}°`;
+            document.getElementById('phaseRadDisplay').textContent = `${(state.phaseDeg / 180).toFixed(2)} π rad`;
+            document.getElementById('svgLivePhaseBadge').textContent = `φ = ${state.phaseDeg}°`;
             document.getElementById('summarySourceLabel').textContent = `φ = ${state.phaseDeg}°`;
 
-            const theoBar1 = document.getElementById('compBarTheoD1');
-            const theoBar2 = document.getElementById('compBarTheoD2');
-            theoBar1.style.width = `${pct1}%`;
-            theoBar2.style.width = `${pct2}%`;
+            const p1Pct = (p1 * 100).toFixed(1);
+            const p2Pct = (p2 * 100).toFixed(1);
+            document.getElementById('probD1Text').textContent = `${p1Pct}%`;
+            document.getElementById('probD2Text').textContent = `${p2Pct}%`;
+            document.getElementById('summaryRatioD1').textContent = `${p1Pct}% D1`;
+            document.getElementById('summaryRatioD2').textContent = `${p2Pct}% D2`;
+
+            document.getElementById('barD1').style.width = `${(p1 * 100).toFixed(1)}%`;
+            document.getElementById('barD2').style.width = `${(p2 * 100).toFixed(1)}%`;
+            document.getElementById('compBarTheoD1').style.width = `${(p1 * 100).toFixed(1)}%`;
+            document.getElementById('compBarTheoD2').style.width = `${(p2 * 100).toFixed(1)}%`;
             document.getElementById('compBarTheoLabelD1').textContent = p1 >= 0.14 ? `${Math.round(p1 * 100)}%` : '';
             document.getElementById('compBarTheoLabelD2').textContent = p2 >= 0.14 ? `${Math.round(p2 * 100)}%` : '';
 
-            // Aggiorna sezione empirica misurata sui conteggi N1 / N2
+            document.getElementById('countD1').textContent = state.counts.d1;
+            document.getElementById('countD2').textContent = state.counts.d2;
             document.getElementById('empTotalCount').textContent = total;
-            const empBar1 = document.getElementById('compBarEmpD1');
-            const empBar2 = document.getElementById('compBarEmpD2');
-            const empStatus = document.getElementById('empStatusBadge');
-            const empLegend1 = document.getElementById('empLegendD1');
-            const empLegend2 = document.getElementById('empLegendD2');
 
-            if (hasDetections) {
-                empBar1.style.width = `${empPct1}%`;
-                empBar2.style.width = `${empPct2}%`;
-                empLegend1.textContent = `D1: ${empPct1}% (${state.counts.d1})`;
-                empLegend2.textContent = `D2: ${empPct2}% (${state.counts.d2})`;
-                empStatus.textContent = `${total} fotoni`;
-                empStatus.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800/50';
+            if (total > 0) {
+                const emp1 = (state.counts.d1 / total) * 100;
+                const emp2 = (state.counts.d2 / total) * 100;
+                document.getElementById('freqD1').textContent = `(${emp1.toFixed(1)}%)`;
+                document.getElementById('freqD2').textContent = `(${emp2.toFixed(1)}%)`;
+                document.getElementById('empLegendD1').textContent = `D1: ${emp1.toFixed(1)}%`;
+                document.getElementById('empLegendD2').textContent = `D2: ${emp2.toFixed(1)}%`;
+                document.getElementById('compBarEmpD1').style.width = `${emp1.toFixed(1)}%`;
+                document.getElementById('compBarEmpD2').style.width = `${emp2.toFixed(1)}%`;
+                document.getElementById('empStatusBadge').textContent = `${total} eventi`;
             } else {
-                empBar1.style.width = '50%';
-                empBar2.style.width = '50%';
-                empLegend1.textContent = 'D1: --%';
-                empLegend2.textContent = 'D2: --%';
-                empStatus.textContent = 'In attesa fotoni';
-                empStatus.className = 'text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800';
+                document.getElementById('freqD1').textContent = `(0%)`;
+                document.getElementById('freqD2').textContent = `(0%)`;
+                document.getElementById('empLegendD1').textContent = `D1: --%`;
+                document.getElementById('empLegendD2').textContent = `D2: --%`;
+                document.getElementById('compBarEmpD1').style.width = `50%`;
+                document.getElementById('compBarEmpD2').style.width = `50%`;
+                document.getElementById('empStatusBadge').textContent = `In attesa fotoni`;
             }
 
-            // Evidenziazione visiva del rivelatore dominante
-            const cardD1 = document.getElementById('cardD1');
-            const cardD2 = document.getElementById('cardD2');
-            const ledIndD1 = document.getElementById('ledIndicatorD1');
-            const ledIndD2 = document.getElementById('ledIndicatorD2');
-
-            if (p1 > 0.75) {
-                cardD1.classList.add('border-emerald-500/50', 'shadow-[0_0_15px_rgba(16,185,129,0.12)]');
-                cardD1.classList.remove('border-slate-800');
-            } else {
-                cardD1.classList.remove('border-emerald-500/50', 'shadow-[0_0_15px_rgba(16,185,129,0.12)]');
-                cardD1.classList.add('border-slate-800');
-            }
-
-            if (p2 > 0.75) {
-                cardD2.classList.add('border-violet-500/50', 'shadow-[0_0_15px_rgba(139,92,246,0.12)]');
-                cardD2.classList.remove('border-slate-800');
-            } else {
-                cardD2.classList.remove('border-violet-500/50', 'shadow-[0_0_15px_rgba(139,92,246,0.12)]');
-                cardD2.classList.add('border-slate-800');
-            }
-
-            // Flash dinamico all'arrivo del fotone/onda
-            const flash1Alpha = 0.35 + state.flashD1 * 0.65;
-            const flash2Alpha = 0.35 + state.flashD2 * 0.65;
-            ledIndD1.style.transform = `scale(${1 + state.flashD1 * 0.35})`;
-            ledIndD1.style.backgroundColor = `rgba(52, 211, 153, ${flash1Alpha})`;
-            ledIndD1.style.boxShadow = state.flashD1 > 0.1 ? `0 0 ${12 * state.flashD1}px #34d399` : 'none';
-
-            ledIndD2.style.transform = `scale(${1 + state.flashD2 * 0.35})`;
-            ledIndD2.style.backgroundColor = `rgba(167, 139, 250, ${flash2Alpha})`;
-            ledIndD2.style.boxShadow = state.flashD2 > 0.1 ? `0 0 ${12 * state.flashD2}px #a78bfa` : 'none';
-
-            // Aggiorna cursore e marker sulla curva SVG P(φ) basata sulle misure dei rivelatori
-            updatePhaseSvgChart(p1, p2, measuredCurrent, measuredTotalSamples);
-            const livePhaseBadge = document.getElementById('svgLivePhaseBadge');
-            const coordD1 = document.getElementById('svgCoordD1');
-            const coordD2 = document.getElementById('svgCoordD2');
-            const measureHint = document.getElementById('svgMeasureHint');
-
-            if (livePhaseBadge) livePhaseBadge.textContent = `φ = ${state.phaseDeg}°`;
-            if (measuredCurrent) {
-                const m1Pct = (measuredCurrent.m1 * 100).toFixed(1);
-                const m2Pct = (measuredCurrent.m2 * 100).toFixed(1);
-                if (coordD1) coordD1.textContent = `D1 Mis: ${m1Pct}%`;
-                if (coordD2) coordD2.textContent = `D2 Mis: ${m2Pct}%`;
-            } else {
-                if (coordD1) coordD1.textContent = `D1 Mis: --%`;
-                if (coordD2) coordD2.textContent = `D2 Mis: --%`;
-            }
-            if (measureHint) {
-                const nRounded = Math.round(measuredTotalSamples);
-                measureHint.textContent = `${nRounded} ${nRounded === 1 ? 'misura' : 'misure'} rivelatori · Clicca o trascina per φ`;
-            }
+            updatePhaseSvgChart();
         }
 
-        // Aggiorna il grafico SVG delle probabilità P(φ) a partire dalle misure effettuate dai rivelatori
-        function updatePhaseSvgChart(currentP1, currentP2, measuredCurrent, measuredTotalSamples) {
-            const curveD1El = document.getElementById('svgCurveD1');
-            const curveD2El = document.getElementById('svgCurveD2');
-            const theoD1El = document.getElementById('svgTheoD1');
-            const theoD2El = document.getElementById('svgTheoD2');
-            const pointsGroup = document.getElementById('svgMeasuredPoints');
-            if (!curveD1El || !curveD2El) return;
+        // Aggiorna le curve teoriche, le misure registrate e i marker dinamici sul grafico SVG
+        function updatePhaseSvgChart() {
+            const xStart = 30;
+            const width = 298;
+            const yTop = 12;
+            const yBot = 102;
+            const height = yBot - yTop;
 
-            const plotLeft = 30;
-            const plotRight = 328;
-            const plotTop = 12;
-            const plotBottom = 102;
-            const plotWidth = plotRight - plotLeft;
-            const plotHeight = plotBottom - plotTop;
+            const theoD1Path = document.getElementById('svgTheoD1');
+            const theoD2Path = document.getElementById('svgTheoD2');
 
-            // Genera i path di riferimento teorici una sola volta
-            if (theoD1El && theoD2El && !theoD1El.getAttribute('d')) {
-                let t1Path = '';
-                let t2Path = '';
-                const steps = 90;
-
-                for (let i = 0; i <= steps; i++) {
-                    const deg = (i / steps) * 360;
+            if (state.showTheoCurve) {
+                let d1Cmd = '';
+                let d2Cmd = '';
+                for (let deg = 0; deg <= 360; deg += 3) {
                     const rad = (deg * Math.PI) / 180;
-                    const prob1 = Math.pow(Math.cos(rad / 2), 2);
-                    const prob2 = Math.pow(Math.sin(rad / 2), 2);
-
-                    const x = plotLeft + (deg / 360) * plotWidth;
-                    const y1 = plotBottom - prob1 * plotHeight;
-                    const y2 = plotBottom - prob2 * plotHeight;
-
-                    const prefix = i === 0 ? 'M' : 'L';
-                    t1Path += `${prefix}${x.toFixed(1)},${y1.toFixed(1)} `;
-                    t2Path += `${prefix}${x.toFixed(1)},${y2.toFixed(1)} `;
+                    const v1 = Math.pow(Math.cos(rad / 2), 2);
+                    const v2 = Math.pow(Math.sin(rad / 2), 2);
+                    const px = xStart + (deg / 360) * width;
+                    const py1 = yBot - v1 * height;
+                    const py2 = yBot - v2 * height;
+                    d1Cmd += (deg === 0 ? 'M ' : ' L ') + `${px.toFixed(1)} ${py1.toFixed(1)}`;
+                    d2Cmd += (deg === 0 ? 'M ' : ' L ') + `${px.toFixed(1)} ${py2.toFixed(1)}`;
                 }
-
-                theoD1El.setAttribute('d', t1Path.trim());
-                theoD2El.setAttribute('d', t2Path.trim());
+                theoD1Path.setAttribute('d', d1Cmd);
+                theoD2Path.setAttribute('d', d2Cmd);
+            } else {
+                theoD1Path.setAttribute('d', '');
+                theoD2Path.setAttribute('d', '');
             }
 
-            if (theoD1El && theoD2El) {
-                const theoOpacity = state.showTheoCurve ? '0.32' : '0';
-                theoD1El.setAttribute('opacity', theoOpacity);
-                theoD2El.setAttribute('opacity', theoOpacity);
-            }
+            // Polilinea empirica e punti delle fasi campionate
+            let empD1Cmd = '';
+            let empD2Cmd = '';
+            let pointsHtml = '';
+            let measuredCount = 0;
+            let firstEmp = true;
 
-            // Raccoglie i punti misurati dai rivelatori lungo la fase 0..360°
-            const measuredSamples = [];
             for (let deg = 0; deg <= 360; deg++) {
-                const entry = state.phaseMeasurements[deg];
-                if (entry && entry.total > 0) {
-                    const x = plotLeft + (deg / 360) * plotWidth;
-                    const r1 = entry.d1 / entry.total;
-                    const r2 = entry.d2 / entry.total;
-                    const y1 = plotBottom - r1 * plotHeight;
-                    const y2 = plotBottom - r2 * plotHeight;
-                    measuredSamples.push({ deg, x, r1, r2, y1, y2, total: entry.total });
+                const m = state.phaseMeasurements[deg];
+                if (m && m.total > 0) {
+                    measuredCount++;
+                    const r1 = m.d1 / m.total;
+                    const r2 = m.d2 / m.total;
+                    const px = xStart + (deg / 360) * width;
+                    const py1 = yBot - r1 * height;
+                    const py2 = yBot - r2 * height;
+
+                    empD1Cmd += (firstEmp ? 'M ' : ' L ') + `${px.toFixed(1)} ${py1.toFixed(1)}`;
+                    empD2Cmd += (firstEmp ? 'M ' : ' L ') + `${px.toFixed(1)} ${py2.toFixed(1)}`;
+                    firstEmp = false;
+
+                    pointsHtml += `<circle cx="${px.toFixed(1)}" cy="${py1.toFixed(1)}" r="2.2" fill="#34d399" opacity="0.85" />`;
+                    pointsHtml += `<circle cx="${px.toFixed(1)}" cy="${py2.toFixed(1)}" r="2.2" fill="#a78bfa" opacity="0.85" />`;
                 }
             }
 
-            // Costruisce la curva misurata dai dati raccolti dai rivelatori
-            let m1Path = '';
-            let m2Path = '';
-            measuredSamples.forEach((pt, idx) => {
-                const cmd = idx === 0 ? 'M' : 'L';
-                m1Path += `${cmd}${pt.x.toFixed(1)},${pt.y1.toFixed(1)} `;
-                m2Path += `${cmd}${pt.x.toFixed(1)},${pt.y2.toFixed(1)} `;
+            document.getElementById('svgCurveD1').setAttribute('d', empD1Cmd);
+            document.getElementById('svgCurveD2').setAttribute('d', empD2Cmd);
+            document.getElementById('svgMeasuredPoints').innerHTML = pointsHtml;
+
+            const curDeg = Math.round(state.phaseDeg) % 361;
+            const curX = xStart + (state.phaseDeg / 360) * width;
+            document.getElementById('svgPhaseCursorLine').setAttribute('x1', curX.toFixed(1));
+            document.getElementById('svgPhaseCursorLine').setAttribute('x2', curX.toFixed(1));
+
+            const { p1, p2 } = getProbabilities();
+            const winTotal = state.windowCounts.d1 + state.windowCounts.d2;
+
+            // I marker principali mostrano il rapporto degli eventi simulati nel tempo (oppure il valore atteso prima del primo evento)
+            const ratio1 = winTotal > 0 ? state.windowCounts.d1 / winTotal : p1;
+            const ratio2 = winTotal > 0 ? state.windowCounts.d2 / winTotal : p2;
+
+            document.getElementById('svgMarkerD1').setAttribute('cx', curX.toFixed(1));
+            document.getElementById('svgMarkerD1').setAttribute('cy', (yBot - ratio1 * height).toFixed(1));
+            document.getElementById('svgMarkerD2').setAttribute('cx', curX.toFixed(1));
+            document.getElementById('svgMarkerD2').setAttribute('cy', (yBot - ratio2 * height).toFixed(1));
+
+            document.getElementById('svgCoordD1').textContent = winTotal > 0
+                ? `D1 Rapporto: ${(ratio1 * 100).toFixed(1)}% (${state.windowCounts.d1}/${winTotal})`
+                : `D1 Atteso: ${(p1 * 100).toFixed(0)}%`;
+            document.getElementById('svgCoordD2').textContent = winTotal > 0
+                ? `D2 Rapporto: ${(ratio2 * 100).toFixed(1)}% (${state.windowCounts.d2}/${winTotal})`
+                : `D2 Atteso: ${(p2 * 100).toFixed(0)}%`;
+            document.getElementById('svgMeasureHint').textContent = `${measuredCount} fasi campionate · Eventi fase: ${winTotal}`;
+        }
+
+        // Sincronizza l'interfaccia della misura dei cammini e cancellazione quantistica
+        function syncObserverUI() {
+            const dot = document.getElementById('observerDot');
+            const badge = document.getElementById('observerStateBadge');
+            const label = document.getElementById('labelToggleObserver');
+            const desc = document.getElementById('observerDescription');
+            const box = document.getElementById('observerBox');
+
+            if (state.observerActive) {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-rose-400 shadow-[0_0_8px_#fb7185] animate-pulse transition-all';
+                badge.textContent = 'CAMMINO OSSERVATO (50/50)';
+                badge.className = 'text-[11px] font-mono text-rose-300 bg-rose-950/70 px-2 py-0.5 rounded border border-rose-800/60';
+                label.textContent = 'Disattiva Osservatore';
+                box.classList.remove('border-slate-800/90');
+                box.classList.add('border-rose-500/40');
+                desc.innerHTML = 'La sonda <span class="font-mono text-rose-300">which-path</span> rileva il cammino: l’interferenza scompare e le uscite tendono al <span class="font-mono text-slate-200">50% / 50%</span>.';
+            } else {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] transition-all';
+                badge.textContent = 'COERENZA / ERASER ATTIVO';
+                badge.className = 'text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50';
+                label.textContent = 'Attiva Misura Cammino';
+                box.classList.remove('border-rose-500/40');
+                box.classList.add('border-slate-800/90');
+                desc.innerHTML = 'Informazione di cammino assente o cancellata: l’interferenza dipendente da <span class="font-mono text-amber-300">φ</span> è ripristinata.';
+            }
+
+            document.querySelectorAll('.branch-opt').forEach(btn => {
+                const active = btn.dataset.branch === state.observerBranch;
+                btn.className = active
+                    ? 'branch-opt px-2 py-0.5 rounded border bg-rose-500/20 text-rose-300 border-rose-500/40 transition'
+                    : 'branch-opt px-2 py-0.5 rounded border bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200 transition';
             });
-
-            curveD1El.setAttribute('d', m1Path.trim());
-            curveD2El.setAttribute('d', m2Path.trim());
-
-            // Aggiorna i punti discreti delle misure sui rivelatori
-            if (pointsGroup) {
-                let circlesHtml = '';
-                // Limita i cerchi disegnati se ci sono moltissimi campioni per mantenere il rendering fluido
-                const stride = measuredSamples.length > 80 ? Math.ceil(measuredSamples.length / 80) : 1;
-                for (let i = 0; i < measuredSamples.length; i += stride) {
-                    const pt = measuredSamples[i];
-                    circlesHtml += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y1.toFixed(1)}" r="1.8" fill="#34d399" opacity="0.85" />`;
-                    circlesHtml += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y2.toFixed(1)}" r="1.8" fill="#a78bfa" opacity="0.85" />`;
-                }
-                pointsGroup.innerHTML = circlesHtml;
-            }
-
-            // Posiziona cursore verticale e marker sulla misura corrente (o sul riferimento se ancora privo di misure)
-            const cursorX = plotLeft + (state.phaseDeg / 360) * plotWidth;
-            const activeRate1 = measuredCurrent ? measuredCurrent.m1 : (measuredTotalSamples === 0 ? currentP1 : null);
-            const activeRate2 = measuredCurrent ? measuredCurrent.m2 : (measuredTotalSamples === 0 ? currentP2 : null);
-
-            const cursorLine = document.getElementById('svgPhaseCursorLine');
-            const marker1 = document.getElementById('svgMarkerD1');
-            const marker2 = document.getElementById('svgMarkerD2');
-
-            if (cursorLine) {
-                cursorLine.setAttribute('x1', cursorX.toFixed(1));
-                cursorLine.setAttribute('x2', cursorX.toFixed(1));
-            }
-            if (marker1) {
-                marker1.setAttribute('cx', cursorX.toFixed(1));
-                if (activeRate1 !== null) {
-                    marker1.setAttribute('cy', (plotBottom - activeRate1 * plotHeight).toFixed(1));
-                    marker1.setAttribute('opacity', '1');
-                } else {
-                    marker1.setAttribute('opacity', '0.25');
-                }
-            }
-            if (marker2) {
-                marker2.setAttribute('cx', cursorX.toFixed(1));
-                if (activeRate2 !== null) {
-                    marker2.setAttribute('cy', (plotBottom - activeRate2 * plotHeight).toFixed(1));
-                    marker2.setAttribute('opacity', '1');
-                } else {
-                    marker2.setAttribute('opacity', '0.25');
-                }
-            }
         }
 
-        // Loop principale d'animazione
-        let lastTimestamp = performance.now();
-        function animationLoop(now) {
-            const dt = Math.min(0.05, (now - lastTimestamp) / 1000);
-            lastTimestamp = now;
+        // Imposta la modalità onda o fotone singolo
+        function setMode(mode) {
+            state.mode = mode;
+            const btnWave = document.getElementById('btnModeWave');
+            const btnPhoton = document.getElementById('btnModePhoton');
+            const badge = document.getElementById('modeBadge');
+            const desc = document.getElementById('modeDescription');
 
-            updateSimulation(dt);
-            computeLedFrame();
-            drawCanvas();
-
-            // Aggiorna bagliori UI in tempo reale
-            if (state.flashD1 > 0.01 || state.flashD2 > 0.01) {
-                updateTelemetryUI();
+            if (mode === 'wave') {
+                btnWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
+                btnPhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
+                badge.textContent = 'Sovrapposizione Continua';
+                desc.innerHTML = 'La luminosità e l\'ampiezza dell\'onda lungo il fascio sono proporzionali alla densità di probabilità <span class="font-mono text-cyan-300">|ψ|²</span>. Al secondo beam splitter (BS2) i due cammini interferiscono in base allo sfasamento <span class="font-mono text-amber-300">φ</span>.';
+            } else {
+                btnPhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
+                btnWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
+                badge.textContent = 'Collasso su D1 / D2';
+                desc.innerHTML = 'Ogni singolo fotone viaggia in sovrapposizione nei due rami ma, all\'arrivo, collassa su <strong class="text-emerald-400">D1</strong> o <strong class="text-violet-400">D2</strong> con probabilità <span class="font-mono text-emerald-300">cos²(φ/2)</span> e <span class="font-mono text-violet-300">sin²(φ/2)</span>.';
             }
-
-            requestAnimationFrame(animationLoop);
+            resetCurrentRatioWindow();
+            updateTelemetryUI();
         }
 
-        // Gestione Eventi UI
+        // Aggiorna la fase φ e sincronizza slider e UI
+        function setPhase(deg) {
+            const normalized = ((Math.round(deg) % 360) + 360) % 360;
+            if (normalized !== state.phaseDeg) {
+                resetCurrentRatioWindow();
+            }
+            state.phaseDeg = normalized;
+            document.getElementById('phaseSlider').value = state.phaseDeg;
+            updateTelemetryUI();
+        }
+
+        // Inizializza tutti i listener degli eventi UI e canvas
         function initEventListeners() {
-            // Slider Sfasamento φ
-            const phaseSlider = document.getElementById('phaseSlider');
-            const updatePhase = (val) => {
-                state.phaseDeg = parseInt(val, 10);
-                phaseSlider.value = state.phaseDeg;
-                document.getElementById('phaseDegDisplay').textContent = `${state.phaseDeg}°`;
-                document.getElementById('phaseRadDisplay').textContent = `${(state.phaseDeg / 180).toFixed(2)} π rad`;
-                updateTelemetryUI();
-            };
+            document.getElementById('btnModeWave').addEventListener('click', () => setMode('wave'));
+            document.getElementById('btnModePhoton').addEventListener('click', () => setMode('photon'));
 
-            phaseSlider.addEventListener('input', (e) => updatePhase(e.target.value));
+            document.getElementById('phaseSlider').addEventListener('input', (e) => {
+                setPhase(parseFloat(e.target.value));
+            });
 
             document.querySelectorAll('.preset-phase').forEach(btn => {
-                btn.addEventListener('click', () => updatePhase(btn.dataset.phase));
+                btn.addEventListener('click', () => {
+                    setPhase(parseFloat(btn.dataset.phase));
+                });
             });
 
-            // Toggle curva teorica di riferimento sul grafico delle misure
-            const btnToggleTheoCurve = document.getElementById('btnToggleTheoCurve');
-            if (btnToggleTheoCurve) {
-                btnToggleTheoCurve.addEventListener('click', () => {
-                    state.showTheoCurve = !state.showTheoCurve;
-                    btnToggleTheoCurve.textContent = state.showTheoCurve ? 'Teoria: ON' : 'Teoria: OFF';
-                    btnToggleTheoCurve.className = state.showTheoCurve
-                        ? 'px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition'
-                        : 'px-1.5 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-500 border border-slate-800 transition';
-                    updateTelemetryUI();
-                });
-            }
+            document.getElementById('btnToggleObserver').addEventListener('click', () => {
+                state.observerActive = !state.observerActive;
+                resetCurrentRatioWindow();
+                syncObserverUI();
+                updateTelemetryUI();
+            });
 
-            // Interazione diretta (click / drag) sulla curva SVG P(φ) per regolare φ
-            const phaseSvg = document.getElementById('phaseInterferenceSvg');
-            if (phaseSvg) {
-                let isDraggingSvg = false;
-                const setPhaseFromSvgPointer = (clientX) => {
-                    const rect = phaseSvg.getBoundingClientRect();
-                    if (!rect.width) return;
-                    const viewBoxWidth = 340;
-                    const plotLeft = 30;
-                    const plotRight = 328;
-                    const svgX = ((clientX - rect.left) / rect.width) * viewBoxWidth;
-                    const norm = Math.max(0, Math.min(1, (svgX - plotLeft) / (plotRight - plotLeft)));
-                    updatePhase(Math.round(norm * 360));
-                };
-
-                phaseSvg.addEventListener('mousedown', (e) => {
-                    isDraggingSvg = true;
-                    setPhaseFromSvgPointer(e.clientX);
-                });
-                window.addEventListener('mousemove', (e) => {
-                    if (isDraggingSvg) setPhaseFromSvgPointer(e.clientX);
-                });
-                window.addEventListener('mouseup', () => {
-                    isDraggingSvg = false;
-                });
-                phaseSvg.addEventListener('touchstart', (e) => {
-                    if (e.touches.length > 0) setPhaseFromSvgPointer(e.touches[0].clientX);
-                }, { passive: true });
-                phaseSvg.addEventListener('touchmove', (e) => {
-                    if (e.touches.length > 0) setPhaseFromSvgPointer(e.touches[0].clientX);
-                }, { passive: true });
-            }
-
-            // Switch Modalità Onda vs Fotone Singolo
-            const btnModeWave = document.getElementById('btnModeWave');
-            const btnModePhoton = document.getElementById('btnModePhoton');
-            const modeBadge = document.getElementById('modeBadge');
-            const modeDescription = document.getElementById('modeDescription');
-
-            // Controllo Misura dei Cammini (Osservatore) e Cancellazione Quantistica
-            const syncObserverButtons = () => {
-                document.querySelectorAll('.branch-opt').forEach(btn => {
-                    const isSelected = btn.dataset.branch === state.observerBranch;
-                    btn.className = isSelected
-                        ? 'branch-opt px-2 py-0.5 rounded border bg-rose-500/20 text-rose-300 border-rose-500/40 transition'
-                        : 'branch-opt px-2 py-0.5 rounded border bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200 transition';
-                });
-            };
-
-            const btnToggleObserver = document.getElementById('btnToggleObserver');
-            if (btnToggleObserver) {
-                btnToggleObserver.addEventListener('click', () => {
-                    state.observerActive = !state.observerActive;
-                    updateTelemetryUI();
-                });
-            }
-
-            const btnQuantumEraser = document.getElementById('btnQuantumEraser');
-            if (btnQuantumEraser) {
-                btnQuantumEraser.addEventListener('click', () => {
-                    // Cancella l'informazione di cammino ("quantum eraser") ripristinando l'interferenza
-                    state.observerActive = false;
-                    spawnPulse();
-                    updateTelemetryUI();
-                });
-            }
+            document.getElementById('btnQuantumEraser').addEventListener('click', () => {
+                state.observerActive = false;
+                resetCurrentRatioWindow();
+                syncObserverUI();
+                updateTelemetryUI();
+            });
 
             document.querySelectorAll('.branch-opt').forEach(btn => {
                 btn.addEventListener('click', () => {
                     state.observerBranch = btn.dataset.branch;
-                    if (!state.observerActive) {
-                        state.observerActive = true;
-                    }
-                    syncObserverButtons();
-                    updateTelemetryUI();
+                    resetCurrentRatioWindow();
+                    syncObserverUI();
                 });
             });
-            syncObserverButtons();
 
-            const setMode = (newMode) => {
-                state.mode = newMode;
-                if (newMode === 'wave') {
-                    btnModeWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
-                    btnModePhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
-                    modeBadge.textContent = 'Sovrapposizione Continua';
-                    modeDescription.innerHTML = 'La luminosità dei LED è proporzionale alla densità di probabilità <span class="font-mono text-cyan-300">|ψ|²</span>. Al secondo beam splitter (BS2) i due cammini interferiscono costruttivamente o distruttivamente in base allo sfasamento <span class="font-mono text-amber-300">φ</span>.';
-                } else {
-                    btnModePhoton.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.4)]';
-                    btnModeWave.className = 'py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-900';
-                    modeBadge.textContent = 'Collasso Stocastico';
-                    modeDescription.innerHTML = 'Ogni singolo fotone viaggia in sovrapposizione nei due rami paralleli e collassa su <strong class="text-emerald-400">D1</strong> o <strong class="text-violet-400">D2</strong> al momento della rivelazione secondo <span class="font-mono text-emerald-300">cos²(φ/2)</span> e <span class="font-mono text-violet-300">sin²(φ/2)</span>.';
-                }
-                updateTelemetryUI();
-            };
+            document.getElementById('btnToggleTheoCurve').addEventListener('click', (e) => {
+                state.showTheoCurve = !state.showTheoCurve;
+                e.currentTarget.textContent = state.showTheoCurve ? 'Curva: ON' : 'Curva: OFF';
+                updatePhaseSvgChart();
+            });
 
-            btnModeWave.addEventListener('click', () => setMode('wave'));
-            btnModePhoton.addEventListener('click', () => setMode('photon'));
+            document.getElementById('btnToggleLabels').addEventListener('click', () => {
+                state.showLabels = !state.showLabels;
+            });
 
-            // Play / Pausa
             const btnPlayPause = document.getElementById('btnPlayPause');
+            const labelPlayPause = document.getElementById('labelPlayPause');
+            const iconPause = document.getElementById('iconPause');
+            const iconPlay = document.getElementById('iconPlay');
+            const statusIndicator = document.getElementById('statusIndicator');
+
             btnPlayPause.addEventListener('click', () => {
-                state.isPlaying = !state.isPlaying;
-                const statusEl = document.getElementById('statusIndicator');
-                if (!state.isPlaying) {
-                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span> IN PAUSA';
-                    statusEl.className = 'flex items-center gap-1.5 text-amber-400';
-                    document.getElementById('iconPause').classList.add('hidden');
-                    document.getElementById('iconPlay').classList.remove('hidden');
-                    document.getElementById('labelPlayPause').textContent = 'Riprendi';
+                state.isRunning = !state.isRunning;
+                if (state.isRunning) {
+                    labelPlayPause.textContent = 'Pausa';
+                    iconPause.classList.remove('hidden');
+                    iconPlay.classList.add('hidden');
+                    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>IN ESECUZIONE';
+                    statusIndicator.className = 'flex items-center gap-1.5 text-emerald-400';
                 } else {
-                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> IN ESECUZIONE';
-                    statusEl.className = 'flex items-center gap-1.5 text-emerald-400';
-                    document.getElementById('iconPause').classList.remove('hidden');
-                    document.getElementById('iconPlay').classList.add('hidden');
-                    document.getElementById('labelPlayPause').textContent = 'Pausa';
+                    labelPlayPause.textContent = 'Riprendi';
+                    iconPause.classList.add('hidden');
+                    iconPlay.classList.remove('hidden');
+                    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span>IN PAUSA';
+                    statusIndicator.className = 'flex items-center gap-1.5 text-amber-400';
                 }
             });
 
-            // Singolo impulso
-            const btnSinglePulse = document.getElementById('btnSinglePulse');
-            if (btnSinglePulse) {
-                btnSinglePulse.addEventListener('click', () => {
-                    spawnPulse();
-                });
-            }
+            document.getElementById('btnSinglePulse').addEventListener('click', () => {
+                setMode('photon');
+                spawnPulse();
+            });
 
-            // Velocità
             const speedSlider = document.getElementById('speedSlider');
+            const speedDisplay = document.getElementById('speedDisplay');
             speedSlider.addEventListener('input', (e) => {
                 state.speed = parseFloat(e.target.value);
-                document.getElementById('speedDisplay').textContent = `${state.speed.toFixed(1)}x`;
+                speedDisplay.textContent = `${state.speed.toFixed(1)}x`;
             });
-            // Azzera Contatori e Misure dei Rivelatori
+
             document.getElementById('btnResetCounters').addEventListener('click', () => {
                 state.counts.d1 = 0;
                 state.counts.d2 = 0;
+                resetCurrentRatioWindow();
                 state.phaseMeasurements = Array.from({ length: 361 }, () => ({ d1: 0, d2: 0, total: 0 }));
                 updateTelemetryUI();
             });
 
-            // Toggle Etichette Ottiche
-            document.getElementById('btnToggleLabels').addEventListener('click', () => {
-                state.showLabels = !state.showLabels;
-                document.getElementById('legendStrip').classList.toggle('hidden', !state.showLabels);
+            // Selezione interattiva della fase φ tramite click/trascinamento sul grafico SVG
+            const svgEl = document.getElementById('phaseInterferenceSvg');
+            let isScrubbingSvg = false;
+            const updatePhaseFromSvgClientX = (clientX) => {
+                const rect = svgEl.getBoundingClientRect();
+                if (!rect.width) return;
+                const xStartRatio = 30 / 340;
+                const widthRatio = 298 / 340;
+                const norm = (clientX - rect.left) / rect.width;
+                const frac = Math.max(0, Math.min(1, (norm - xStartRatio) / widthRatio));
+                setPhase(frac * 360);
+            };
+
+            svgEl.addEventListener('mousedown', (e) => {
+                isScrubbingSvg = true;
+                updatePhaseFromSvgClientX(e.clientX);
             });
-
-            // Coordinate LED al passaggio del mouse / touch
-            canvas.addEventListener('mousemove', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const labelMarginTop = state.showLabels ? 20 : 6;
-                const cellSize = rect.width / COLS;
-                const x = Math.floor((e.clientX - rect.left) / cellSize);
-                const y = Math.floor((e.clientY - rect.top - labelMarginTop) / cellSize);
-
-                if (x >= 0 && x < COLS && y >= 0 && y < ROWS) {
-                    state.hoveredLed = { x, y };
-                    const serpentineIdx = (x % 2 === 0) ? (x * ROWS + y) : (x * ROWS + (ROWS - 1 - y));
-                    document.getElementById('hoverCoords').textContent = `LED: [x=${x}, y=${y}] (Idx #${serpentineIdx})`;
-                } else {
-                    state.hoveredLed = null;
-                    document.getElementById('hoverCoords').textContent = 'LED: [--, --]';
+            window.addEventListener('mousemove', (e) => {
+                if (isScrubbingSvg) updatePhaseFromSvgClientX(e.clientX);
+            });
+            window.addEventListener('mouseup', () => {
+                isScrubbingSvg = false;
+            });
+            svgEl.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 0) {
+                    isScrubbingSvg = true;
+                    updatePhaseFromSvgClientX(e.touches[0].clientX);
                 }
-            });
-
-            canvas.addEventListener('mouseleave', () => {
-                state.hoveredLed = null;
-                document.getElementById('hoverCoords').textContent = 'LED: [--, --]';
-            });
-
-            // Modale Codice Arduino C++
-            const modal = document.getElementById('arduinoModal');
-            document.getElementById('arduinoCodeBlock').textContent = generateArduinoCode();
-
-            document.getElementById('btnOpenArduino').addEventListener('click', () => {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            });
-
-            document.getElementById('btnCloseArduino').addEventListener('click', () => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            });
-
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.add('hidden');
-                    modal.classList.remove('flex');
+            }, { passive: true });
+            svgEl.addEventListener('touchmove', (e) => {
+                if (isScrubbingSvg && e.touches.length > 0) {
+                    updatePhaseFromSvgClientX(e.touches[0].clientX);
                 }
+            }, { passive: true });
+            window.addEventListener('touchend', () => {
+                isScrubbingSvg = false;
             });
 
-            // Copia Codice negli appunti (compatibile iframe)
-            document.getElementById('btnCopyCode').addEventListener('click', () => {
-                const codeText = document.getElementById('arduinoCodeBlock').textContent;
-                const tempArea = document.createElement('textarea');
-                tempArea.value = codeText;
-                document.body.appendChild(tempArea);
-                tempArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempArea);
-
-                const feedback = document.getElementById('copyFeedback');
-                feedback.classList.remove('opacity-0');
-                setTimeout(() => feedback.classList.add('opacity-0'), 2200);
+            window.addEventListener('resize', () => {
+                drawCanvas();
             });
         }
 
-        // Genera il codice C++ per Arduino / ESP32 con libreria FastLED
-        function generateArduinoCode() {
-            return `#include <FastLED.h>
-#include <math.h>
+        let lastTime = performance.now();
+        function mainLoop(now) {
+            const dt = Math.min(0.1, Math.max(0, (now - lastTime) / 1000));
+            lastTime = now;
+            const nowSec = now / 1000;
 
-// Configurazione Matrice LED WS2812B 8x32 (256 LED)
-#define LED_PIN     6
-#define POT_PIN     A0      // Potenziometro per sfasamento phi (0 - 2*PI)
-#define NUM_COLS    32
-#define NUM_ROWS    8
-#define NUM_LEDS    (NUM_COLS * NUM_ROWS)
-#define BRIGHTNESS  65
-
-CRGB leds[NUM_LEDS];
-
-// Conversione coordinate (x, y) -> indice LED (cablaggio a serpentina verticale tipico 8x32)
-uint16_t XY(uint8_t x, uint8_t y) {
-  if (x >= NUM_COLS || y >= NUM_ROWS) return 0;
-  if (x % 2 == 0) {
-    return (x * NUM_ROWS) + y;
-  } else {
-    return (x * NUM_ROWS) + (NUM_ROWS - 1 - y);
-  }
-}
-
-// Percorso di ingresso: Sorgente (0,5) -> BS1 (6,5)
-const uint8_t pathIn[][2] = {{1,5}, {2,5}, {3,5}, {4,5}, {5,5}, {6,5}};
-// Ramo superiore parallelo: BS1 -> M1(6,1) -> Sfasatore -> M3(24,1) -> BS2(24,5)
-const uint8_t pathUpper[][2] = {
-  {6,4},{6,3},{6,2},{6,1},
-  {7,1},{8,1},{9,1},{10,1},{11,1},{12,1},{13,1},{14,1},{15,1},
-  {16,1},{17,1},{18,1},{19,1},{20,1},{21,1},{22,1},{23,1},{24,1},
-  {24,2},{24,3},{24,4},{24,5}
-};
-// Ramo inferiore parallelo: BS1 -> M2(6,6) -> M4(24,6) -> BS2(24,5)
-const uint8_t pathLower[][2] = {
-  {6,6},{7,6},{8,6},{9,6},{10,6},{11,6},{12,6},{13,6},{14,6},{15,6},
-  {16,6},{17,6},{18,6},{19,6},{20,6},{21,6},{22,6},{23,6},{24,6},{24,5}
-};
-// Uscite verso Rivelatore D1 (alto) e D2 (basso)
-const uint8_t pathOutD1[][2] = {{25,4}, {26,3}, {27,2}, {28,2}, {29,2}, {30,2}};
-const uint8_t pathOutD2[][2] = {{25,5}, {26,5}, {27,5}, {28,5}, {29,5}, {30,5}};
-
-float progress = 0.0;
-
-void setup() {
-  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(BRIGHTNESS);
-  randomSeed(analogRead(A1));
-}
-
-void drawOptics(float phi) {
-  // Sorgente Laser (0,5)
-  leds[XY(0, 5)] = CRGB(240, 30, 70);
-  // Beam Splitters BS1 (6,5) e BS2 (24,5)
-  leds[XY(6, 5)]  = CRGB(40, 170, 255);
-  leds[XY(24, 5)] = CRGB(40, 170, 255);
-  // Specchi M1..M4
-  leds[XY(6, 1)] = leds[XY(6, 6)] = leds[XY(24, 1)] = leds[XY(24, 6)] = CRGB(120, 140, 160);
-  // Indicatore Sfasatore (Phase Shifter phi)
-  uint8_t psVal = 80 + (uint8_t)(175.0 * (phi / TWO_PI));
-  leds[XY(14, 0)] = leds[XY(15, 0)] = leds[XY(16, 0)] = CRGB(psVal, psVal * 0.65, 0);
-}
-
-void loop() {
-  // Legge lo sfasamento phi dal potenziometro (0 .. 2*PI)
-  float phi = (analogRead(POT_PIN) / 1023.0) * TWO_PI;
-  float probD1 = pow(cos(phi / 2.0), 2);
-  float probD2 = pow(sin(phi / 2.0), 2);
-
-  FastLED.clear();
-  drawOptics(phi);
-
-  if (progress < 1.0) {
-    // 1. Fotone verso BS1
-    int idx = progress * 5;
-    leds[XY(pathIn[idx][0], pathIn[idx][1])] = CRGB(255, 80, 110);
-  } 
-  else if (progress < 2.0) {
-    // 2. Sovrapposizione nei due percorsi paralleli
-    float t = progress - 1.0;
-    int idxU = t * 25;
-    int idxL = t * 19;
-    leds[XY(pathUpper[idxU][0], pathUpper[idxU][1])] += (t > 0.5) ? CRGB(250, 180, 30) : CRGB(30, 210, 240);
-    leds[XY(pathLower[idxL][0], pathLower[idxL][1])] += CRGB(30, 210, 240);
-  } 
-  else {
-    // 3. Interferenza dopo BS2 verso i due rivelatori separati
-    float t = min(1.0f, progress - 2.0f);
-    int idxOut = t * 5;
-    leds[XY(pathOutD1[idxOut][0], pathOutD1[idxOut][1])] += CRGB(0, (uint8_t)(255 * probD1), (uint8_t)(120 * probD1));
-    leds[XY(pathOutD2[idxOut][0], pathOutD2[idxOut][1])] += CRGB((uint8_t)(160 * probD2), 0, (uint8_t)(255 * probD2));
-
-    if (t > 0.85) {
-      // Illumina i blocchi rivelatori 2x2 D1 e D2
-      CRGB colD1 = CRGB(0, (uint8_t)(255 * probD1), (uint8_t)(100 * probD1));
-      CRGB colD2 = CRGB((uint8_t)(150 * probD2), 0, (uint8_t)(255 * probD2));
-      leds[XY(30,1)] = leds[XY(31,1)] = leds[XY(30,2)] = leds[XY(31,2)] = colD1;
-      leds[XY(30,5)] = leds[XY(31,5)] = leds[XY(30,6)] = leds[XY(31,6)] = colD2;
-    }
-  }
-
-  FastLED.show();
-  progress += 0.035;
-  if (progress >= 3.1) progress = 0.0;
-  delay(25);
-}`;
+            updateSimulation(dt, nowSec);
+            drawCanvas(nowSec);
+            requestAnimationFrame(mainLoop);
         }
 
-        // Avvio all'onload della finestra
-        window.onload = function () {
+        window.addEventListener('DOMContentLoaded', () => {
             initEventListeners();
+            syncObserverUI();
             updateTelemetryUI();
-            spawnPulse();
-            requestAnimationFrame(animationLoop);
-        };
+            drawCanvas(0);
+            requestAnimationFrame(mainLoop);
+        });
     </script>
 </body>
 </html>
